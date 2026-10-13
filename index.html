@@ -415,7 +415,8 @@ function pickType() {
 const pickLook = () => cfg.look === 'mix' ? (Math.random() < .5 ? 'clay' : 'glass') : cfg.look;
 
 // the high house (left, tall) and the low house (right, short) throw clays across each other
-const HHX = 105, LHX = () => W - 105;
+// the trap houses stand just inside the two shooters, who are right at the screen edges
+const HHX = 255, LHX = () => W - 255;
 const hh = () => ({ x: HHX + 66, y: GB - 316 });
 const lh = () => ({ x: LHX() - 70, y: GB - 62 });
 function launch(t, from, exact) {
@@ -465,15 +466,18 @@ const GUN = {
 };
 const GKEYS = Object.keys(GUN);
 for (const g of Object.values(GUN)) g.spd *= Z;
-const RANGE = 2700 * Z;
+// on extra-wide screens the shot flies faster and further to match, and its pattern spreads no wider at the far side
+const fk = () => Math.max(1, W / (2400 * Z));
+const range = () => 2700 * Z * fk();
+const spreadAt = (G, d) => G.r0 + G.k * d / fk();
 const gunOk = g => GUN[g] ? g : 'light';
 function gunNotes() { for (const i of [0, 1]) $('#gun' + (i + 1) + 'Note').textContent = GUN[cfg.gun[i]].note; }
 const GUN_LEN = 92;
 
 /* ---------------- obstacles: trees and garden ornaments that stop the shot ---------------- */
-function stationX(st) { if (st === 8) return Math.round(W / 2); const a = 300, b = W - 300; return Math.round(a + (b - a) * (st - 1) / 6); }
+function stationX(st) { if (st === 8) return Math.round(W / 2); const a = 380, b = W - 380; return Math.round(a + (b - a) * (st - 1) / 6); }
 // the shooters stand as far apart as the field allows, just inside the trap houses
-const homeX = id => solo() ? Math.round(CX - 200) : id ? W - 255 : 255;
+const homeX = id => solo() ? Math.round(CX - 200) : id ? W - 95 : 95;
 function obsParts(o) {
   const cx = o.x, h = o.h, w = o.w;
   if (o.kind === 'oak') return [{ r: [cx - 15, GB - h * .55, 30, h * .55] }, { c: [cx, GB - h * .7, w * .42] }, { c: [cx - w * .3, GB - h * .55, w * .3] }, { c: [cx + w * .3, GB - h * .55, w * .3] }];
@@ -535,7 +539,7 @@ function genObstacles(n, sd) {
 // Same-screen and computer games stretch the field to the whole screen width, so the houses and shooters sit at its edges;
 // online games keep one standard field (shaped like most phones) so both players see the same thing.
 function setField() {
-  const wide = role === 'local' && cvs.height ? clamp(Math.round(H * cvs.width / cvs.height), 2000 * Z, 2900 * Z) : 2400 * Z;
+  const wide = role === 'local' && cvs.height ? clamp(Math.round(H * cvs.width / cvs.height), 2000 * Z, 4200 * Z) : 2400 * Z;
   if (wide !== W) { W = wide; CX = W / 2; builtKey = ''; resize(); }
 }
 function buildLevel() {
@@ -672,7 +676,7 @@ const restAim = p => p.facing > 0 ? .95 : Math.PI - .95;   // gun pointed safely
 const upAim = p => Math.atan2(-430, CX - p.x);               // gun up towards the middle of the sky
 function mkPlayer(id) {
   const home = homeX(id);
-  const p = { id, S: STYLE[id], home, x: home, tx: null, facing: id ? -1 : 1, minX: home - 55, maxX: home + 55,
+  const p = { id, S: STYLE[id], home, x: home, tx: null, facing: id ? -1 : 1, minX: home - 45, maxX: home + 45,
     aim: 0, shells: 2, reloadT: 0, cool: 0, kick: 0, recoil: 0, walk: 0, pullT: 0, hold: null, gun: cfg.gun[id] || 'light' };
   p.aim = upAim(p); return p;
 }
@@ -849,14 +853,14 @@ function simShots(dt) {
   for (const s of shots) {
     const G = GUN[s.g];
     for (let i = 0; i < 4 && !s.done; i++) {
-      s.d += G.spd * dt / 4;
-      const x = s.x0 + s.dx * s.d, y = s.y0 + s.dy * s.d, r = G.r0 + G.k * s.d;
+      s.d += G.spd * fk() * dt / 4;
+      const x = s.x0 + s.dx * s.d, y = s.y0 + s.dy * s.d, r = spreadAt(G, s.d);
       if (inLadies(x, y)) { s.done = true; emitFx({ k: 'stray', x: Math.round(x), y: Math.round(y) }); say('stray', s.owner, true); break; }
       if (y > GB + 6) { s.done = true; emitFx({ k: 'dirt', x: Math.round(x) }); break; }
       const o = obstacles.find(o => obsHit(o, x, y));
       if (o) { s.done = true; emitFx({ k: 'obs', x: Math.round(x), y: Math.round(y), m: o.kind }); break; }
       for (let j = targets.length - 1; j >= 0; j--) { const b = targets[j]; if (Math.hypot(b.x - x, b.y - y) < r + TT[b.t].r) breakTarget(b, s, j); }
-      if (s.d > RANGE || x < XL - 100 || x > XR + 100 || y < YT - 100) s.done = true;
+      if (s.d > range() || x < XL - 100 || x > XR + 100 || y < YT - 100) s.done = true;
     }
   }
   shots = shots.filter(s => !s.done);
@@ -1012,7 +1016,7 @@ function intercept(p, b) {
   let best = null;
   for (let i = 1; i <= 100; i++) {
     if (stepTarget(c, 1 / 60)) break;
-    const t = i / 60, d = Math.hypot(c.x - sh.x, c.y - sh.y) - GUN_LEN * CS, e = Math.abs(d - G.spd * t);
+    const t = i / 60, d = Math.hypot(c.x - sh.x, c.y - sh.y) - GUN_LEN * CS, e = Math.abs(d - G.spd * fk() * t);
     if (!best || e < best.e) best = { e, x: c.x, y: c.y };
   }
   return best && best.e < 60 * Z ? best : null;
@@ -1045,7 +1049,8 @@ function toWorld(e) {
   const r = cvs.getBoundingClientRect(), k = cvs.width / r.width;
   return { x: ((e.clientX - r.left) * k - offX) / scale, y: ((e.clientY - r.top) * k - offY) / scale };
 }
-function stepBtns(p) { const y = GB + 80; return [{ x: p.home - 115, y, d: -1 }, { x: p.home + 115, y, d: 1 }]; }
+// both arrows sit on the inward side, since the shooter stands at the very edge
+function stepBtns(p) { const y = GB + 80, k = p.home < CX ? 1 : -1, a = p.home + k * 20, b = p.home + k * 130; return [{ x: Math.min(a, b), y, d: -1 }, { x: Math.max(a, b), y, d: 1 }]; }
 const showSteps = p => localControl(p) && canMove(p) && !skeet();
 cvs.addEventListener('pointerdown', e => {
   ac(); if (state !== 'play') return;
@@ -1642,9 +1647,9 @@ function update(rdt) {
 function updateVolleys(dt) {
   for (const v of volleys) {
     v.t += dt; if (v.dead) continue;
-    v.d += GUN[v.g].spd * dt;
+    v.d += GUN[v.g].spd * fk() * dt;
     const x = v.x0 + v.dx * v.d, y = v.y0 + v.dy * v.d;
-    if (y > GB + 6 || v.d > RANGE || obstacles.some(o => obsHit(o, x, y)) || inLadies(x, y)) v.dead = true;
+    if (y > GB + 6 || v.d > range() || obstacles.some(o => obsHit(o, x, y)) || inLadies(x, y)) v.dead = true;
   }
   volleys = volleys.filter(v => !v.dead && v.t < 1.5);
 }
@@ -2025,7 +2030,7 @@ function drawButlerSays() {
   ctx.globalAlpha = 1;
 }
 function drawVolley(v) {
-  const G = GUN[v.g], r = G.r0 + G.k * v.d, cx = v.x0 + v.dx * v.d, cy = v.y0 + v.dy * v.d, a = Math.max(0, 1 - v.d / RANGE) * .85;
+  const G = GUN[v.g], r = spreadAt(G, v.d), cx = v.x0 + v.dx * v.d, cy = v.y0 + v.dy * v.d, a = Math.max(0, 1 - v.d / range()) * .85;
   ctx.fillStyle = `rgba(30,28,24,${a})`;
   for (const o of v.off) { ctx.beginPath(); ctx.arc(cx + Math.cos(o.a) * o.m * r, cy + Math.sin(o.a) * o.m * r, 3.2, 0, Math.PI * 2); ctx.fill(); }
   if (v.t < .12) line(v.x0, v.y0, cx, cy, 2, `rgba(255,240,200,${(1 - v.t / .12) * .35})`);
