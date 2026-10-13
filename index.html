@@ -104,7 +104,8 @@ input{font:calc(1.5 * var(--u)) 'IM Fell English', Georgia, serif;padding:calc(.
 .verdict{font-size:calc(2.1 * var(--u));margin:0;font-style:italic;max-width:calc(56 * var(--u))}
 .tally{font-family:'IM Fell English SC', Georgia, serif;font-size:calc(1.7 * var(--u));margin:0;letter-spacing:.05em}
 .row{display:flex;gap:calc(1.2 * var(--u));align-items:center;justify-content:center;flex-wrap:wrap}
-.corner{position:absolute;bottom:1.4cqh;left:50%;transform:translateX(-50%);white-space:nowrap;display:flex;gap:calc(.8 * var(--u));align-items:center}
+/* just under the scoreboard in the middle, clear of the tea party */
+.corner{position:absolute;top:calc(12.5cqh + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);white-space:nowrap;display:flex;gap:calc(.8 * var(--u));align-items:center}
 .corner[hidden]{display:none}
 .mini{font:calc(1.2 * var(--u)) 'IM Fell English SC', Georgia, serif;background:rgba(16,20,10,.75);color:var(--text);border:calc(.12 * var(--u)) solid #6b6a42;padding:calc(.3 * var(--u)) calc(.9 * var(--u));cursor:pointer}
 .mini:hover{background:rgba(40,50,25,.85)}
@@ -331,8 +332,8 @@ input.locked{background:rgba(58,58,34,.12);border-style:dashed}
 const $ = s => document.querySelector(s);
 // The field is H tall and W wide. On one phone W stretches to fit the screen (see setField);
 // online it stays 2000 so both players see exactly the same field.
-const Z = 1.6;            // how far the view is zoomed out
-let W = 2000 * Z, CX = W / 2;
+const Z = 1.3;            // how far the view is zoomed out
+let W = 2400 * Z, CX = W / 2;
 const H = Math.round(1125 * Z), GB = H - 165, CS = 1.15;
 const GC = 360 * Z;      // how strongly clays fall
 const SERIF = "'IM Fell English', Georgia, serif";
@@ -472,7 +473,7 @@ const GUN_LEN = 92;
 /* ---------------- obstacles: trees and garden ornaments that stop the shot ---------------- */
 function stationX(st) { if (st === 8) return Math.round(W / 2); const a = 300, b = W - 300; return Math.round(a + (b - a) * (st - 1) / 6); }
 // the shooters stand as far apart as the field allows, just inside the trap houses
-const homeX = id => solo() ? Math.round(CX - 200) : id ? W - 275 : 275;
+const homeX = id => solo() ? Math.round(CX - 200) : id ? W - 255 : 255;
 function obsParts(o) {
   const cx = o.x, h = o.h, w = o.w;
   if (o.kind === 'oak') return [{ r: [cx - 15, GB - h * .55, 30, h * .55] }, { c: [cx, GB - h * .7, w * .42] }, { c: [cx - w * .3, GB - h * .55, w * .3] }, { c: [cx + w * .3, GB - h * .55, w * .3] }];
@@ -531,9 +532,10 @@ function genObstacles(n, sd) {
   return out;
 }
 
-// Same-screen and computer games use the whole screen width; online games keep the standard field.
+// Same-screen and computer games stretch the field to the whole screen width, so the houses and shooters sit at its edges;
+// online games keep one standard field (shaped like most phones) so both players see the same thing.
 function setField() {
-  const wide = role === 'local' && cvs.height ? clamp(Math.round(H * cvs.width / cvs.height), 2000 * Z, 2400 * Z) : 2000 * Z;
+  const wide = role === 'local' && cvs.height ? clamp(Math.round(H * cvs.width / cvs.height), 2000 * Z, 2900 * Z) : 2400 * Z;
   if (wide !== W) { W = wide; CX = W / 2; builtKey = ''; resize(); }
 }
 function buildLevel() {
@@ -670,7 +672,7 @@ const restAim = p => p.facing > 0 ? .95 : Math.PI - .95;   // gun pointed safely
 const upAim = p => Math.atan2(-430, CX - p.x);               // gun up towards the middle of the sky
 function mkPlayer(id) {
   const home = homeX(id);
-  const p = { id, S: STYLE[id], home, x: home, tx: null, facing: id ? -1 : 1, minX: home - 70, maxX: home + 70,
+  const p = { id, S: STYLE[id], home, x: home, tx: null, facing: id ? -1 : 1, minX: home - 55, maxX: home + 55,
     aim: 0, shells: 2, reloadT: 0, cool: 0, kick: 0, recoil: 0, walk: 0, pullT: 0, hold: null, gun: cfg.gun[id] || 'light' };
   p.aim = upAim(p); return p;
 }
@@ -1043,7 +1045,7 @@ function toWorld(e) {
   const r = cvs.getBoundingClientRect(), k = cvs.width / r.width;
   return { x: ((e.clientX - r.left) * k - offX) / scale, y: ((e.clientY - r.top) * k - offY) / scale };
 }
-function stepBtns(p) { const y = GB + 80; return [{ x: p.home - 130, y, d: -1 }, { x: p.home + 130, y, d: 1 }]; }
+function stepBtns(p) { const y = GB + 80; return [{ x: p.home - 115, y, d: -1 }, { x: p.home + 115, y, d: 1 }]; }
 const showSteps = p => localControl(p) && canMove(p) && !skeet();
 cvs.addEventListener('pointerdown', e => {
   ac(); if (state !== 'play') return;
