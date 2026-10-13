@@ -1,0 +1,16 @@
+{
+  "name": "Clay Duel: The Grand Shoot",
+  "short_name": "Clay Duel",
+  "description": "Two shooters, one country estate. Who breaks the most clays?",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#14180f",
+  "theme_color": "#14180f",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
