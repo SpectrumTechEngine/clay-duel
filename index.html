@@ -159,7 +159,6 @@ input.locked{background:rgba(58,58,34,.12);border-style:dashed}
   .lbl{text-align:left;font-size:17px;margin-top:8px}
   .seg{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:6px;border:0;width:100%;justify-self:stretch}
   .seg button,.seg button+button{font-size:17px;padding:10px 6px;min-height:48px;min-width:0;border:2px solid #3a3a22}
-  #nSeg{grid-template-columns:repeat(6,1fr)}
   #terrSeg,#rdSeg{grid-template-columns:repeat(3,1fr)}
   #gun1Seg,#gun2Seg{grid-template-columns:repeat(3,1fr)}
   .gunbox{width:100%} .gunNote{font-size:14px}
@@ -252,14 +251,22 @@ input.locked{background:rgba(58,58,34,.12);border-style:dashed}
           <div class="in" hidden><button class="big alt sm" data-a="rec">Their career</button><button class="big alt sm" data-a="out">Sign out</button></div>
           <small class="acctMsg">Optional, for the second shooter on this phone.</small>
         </div>
-        <span class="lbl">The round</span>
+        <span class="lbl" id="rdLbl">The round</span>
         <div class="seg" id="rdSeg"><button data-v="skeet" aria-pressed="false">Skeet, 25 clays</button><button data-v="15" aria-pressed="false">First to 15</button><button data-v="25" aria-pressed="true">25</button><button data-v="50" aria-pressed="false">50</button><button data-v="100" aria-pressed="false">100</button></div>
         <span class="lbl">The rules</span>
-        <div class="seg" id="modeSeg"><button data-v="turn" aria-pressed="true">Taking turns</button><button data-v="live" aria-pressed="false">Open shoot</button></div>
+        <div class="seg" id="modeSeg"><button data-v="turn" aria-pressed="true">Taking turns</button><button data-v="live" aria-pressed="false">Open shoot</button><button data-v="sfs" aria-pressed="false">Shot for shot</button></div>
+        <span class="lbl sfRow" hidden>Clays each</span>
+        <div class="seg sfRow" id="sfNSeg" hidden><button data-v="10" aria-pressed="false">10</button><button data-v="20" aria-pressed="true">20</button><button data-v="30" aria-pressed="false">30</button></div>
+        <span class="lbl sfRow" hidden>Swap shooter</span>
+        <div class="seg sfRow" id="sfSwapSeg" hidden><button data-v="1" aria-pressed="true">Every pull</button><button data-v="10" aria-pressed="false">After 10 clays</button></div>
+        <span class="lbl sfRow" hidden>Each pull</span>
+        <div class="seg sfRow" id="sfPairSeg" hidden><button data-v="1" aria-pressed="true">One clay</button><button data-v="2" aria-pressed="false">Two clays</button></div>
+        <span class="lbl sfRow" hidden>Challenge</span>
+        <div class="seg sfRow" id="sfChalSeg" hidden><button data-v="acc" aria-pressed="true">Accuracy</button><button data-v="speed" aria-pressed="false">Speed</button></div>
+        <span class="lbl">Difficulty</span>
+        <div class="seg" id="diffSeg"><button data-v="easy" aria-pressed="false">Easy</button><button data-v="normal" aria-pressed="true">Normal</button><button data-v="hard" aria-pressed="false">Hard</button></div>
         <span class="lbl">Targets</span>
         <div class="seg" id="lookSeg"><button data-v="clay" aria-pressed="true">Clays</button><button data-v="glass" aria-pressed="false">Glass balls</button><button data-v="mix" aria-pressed="false">Both</button></div>
-        <span class="lbl">Obstacles</span>
-        <div class="seg" id="nSeg"><button data-v="0" aria-pressed="false">0</button><button data-v="1" aria-pressed="false">1</button><button data-v="2" aria-pressed="true">2</button><button data-v="3" aria-pressed="false">3</button><button data-v="4" aria-pressed="false">4</button><button data-v="5" aria-pressed="false">5</button></div>
         <span class="lbl">The grounds</span>
         <div class="seg" id="terrSeg"><button data-v="lawn" aria-pressed="true">Estate lawn</button><button data-v="moor" aria-pressed="false">Moor</button><button data-v="lake" aria-pressed="false">Lakeside</button><button data-v="cliff" aria-pressed="false">Clifftop</button><button data-v="woods" aria-pressed="false">Woods</button></div>
         <span class="lbl">Season</span>
@@ -276,7 +283,7 @@ input.locked{background:rgba(58,58,34,.12);border-style:dashed}
           <button class="big alt sm" id="joinBtn">Join by code</button>
         </div>
       </div>
-      <p class="how" id="howTxt">Tap where you want your shot to go. The shot takes a moment to get there, so aim ahead of the clay. You have two barrels, and a quick second barrel kicks a little off line. The guns run from the full choke (the fastest shot, the tightest spread) to the blunderbuss (the slowest shot, an enormous spread). Points: lob 1, clay 2, swift 3, mini 5, rabbit 5, springing teal 8, and the rare golden clay 20. Two with one shot scores double. In a skeet round each shooter takes 25 clays from eight stations, one shot per clay, and the golden clay is worth 5. In an open shoot on one screen, each shooter taps their own half. Step along with A and D, ← and →, or the arrows at your feet.</p>
+      <p class="how" id="howTxt">Tap where you want your shot to go. The shot takes a moment to get there, so aim ahead of the clay. You have two barrels, and a quick second barrel kicks a little off line. The guns run from the full choke (the fastest shot, the tightest spread) to the blunderbuss (the slowest shot, an enormous spread). Clays come from the left and the right equally, in an order nobody can predict. The difficulty sets how fast they fly at first, and every level (or skeet station) is 10% faster. Points: lob 1, clay 2, swift 3, zip 4, mini 5, rabbit 5, springing teal 8, and the rare golden clay 20. In shot for shot, your opponent taps PULL to release your clays (at least 1.5 seconds apart; with two clays they may pull twice quickly), and a clay releases itself after 5 seconds. The accuracy challenge goes to whoever breaks the most; the speed challenge to the quickest average break, where a missed clay counts as 3 seconds. Every round records how many clays you broke and how quickly.</p>
       <img class="ste-logo" src="data:image/webp;base64,UklGRpZJAABXRUJQVlA4WAoAAAAQAAAAMwMAaAAAQUxQSIUJAAAN8D5t2+JE2/Zt+9GSjnQCRJjAwLi71Pn/fx67bOSUUSweiHUnLcf+AQhHd3Jx1Zmj6qqImAD8P7qCaB6G5ARIgNLDzKyIBAjMcvEIvMwE0SWKJS+EILoUMUtFJEAqWPKSo7OsTL5Wmguz9kAqI7eWQ4q95oSVkFvLAXGvGy0aZWw/XF5OtSQuUWGvFy9AruZejmS/GyihYi0LlWGrMT2Ll5Aobdg4U1TqbiE7F0WjCatzShanKBhNFTlFmyEn43jhTDOMeVmRUczhEi1H3gKQVXRwKWZvFKlxShariJt/Hp8THHtxzMuCGBDrD5+4fAbFcjKM4nngbG6QMgz9COmlfN2F2qEfAVZ501g0TIOciaU9G4byEmXVKkb64I0jeSkyyjVbCQZ+BJXWlZrNZ5DX7h/89JcFg8y1+zsywpkcMC5qFLNCXcptNyPUnEmFvLlwgGXS0rpkG4XcIlyaKeeaalSbm3fWcJZTtn68PYyWgr3mCLNad1oSSTIpY1CqwCAlDMJppkVjYmBpMV2uAKb0MV2WACYlTIogLIPOgFNeL8tvh97iZTKbj3cETL8vkShBOSHlBLWEswmLTiAsb8Jlm5B+wuWZoJSQQrJuvsK/vvu8WCJ3816WgGjKjJV4yt+4ZzXb4/4sjhdFFLauVjeGHlbq7e2Xu9aw0/95EC4GVZ/fyewFWLW3azdqxY3Zm4/eYli3nnLIYFqxA1mmW6FuJ14Ip17zJADCKj4JISUvQPbGs+mQsbKfu5qbhv1RlDJz94U5wwp/8dWTrL/3cS9IV+nhWoBVfmvrbsnJ/vrQTZWo7R5jtV9YZma7crg3TZFwNxGs+J3O3dn8vhekhAy79tA5khqAuPJCfmhzKszq9fVyvh9DB8zs1A6OohSQtfn0nt2aQhPM7KztdWVy9q3H2REzdEGxc/voa5hc7vE1n6EPUn57vXM446SMYgZaIdVf2x/2I06GTGOmF6Bw47rR3W9POQln1xhoBnCu/1br/+fzJAGqPxxFugHyW1e3vQ/7sbrM9Y0ZtEMiu7Y9/uqrs2vM+gEAo5rpTpSR6w6hJxa26XCkiPLXrImm4D6v/fwxiBXYxeqOuy81Bav+ZOvkR6PvX8Tceb3NrQi6orX96IbVfv89uIDz4H4cQGMU7tYtd+/jYD5avzKD5mg41UxzyHOJytpEdwBMO4gwNzl2qD8A4AtYrEGQoJjnylUmUn8wq+gFc4j87loP+qNdzxx6fF724b3DSIOgyu7o12yO+5WINQgUH+HT8DyRFdAizQ2r758HMGkRIJI4l0wRQbvM7mKoXdDGQz/WLpDbmEGTjGPzHBZgTUL2/fI5wkSoS3THmbPI3fYDTYLD2DwnX/alJjEvj5r5mqVdTPYmG7UC6RWQnbeD1zctzQLDP0c3rxq6BQcDv1zQLcD9fnmddAsEgW1Dv2SCDikD05xLkxz38mIuZiL9Qfa6G5hXdo/Xy4buwIPvZmau4M9/X3m+TrpD468KzSU7f/au3F0nzWEyzmB+HnxsPrhj6w3EjIvKzs/M7YLOwBSTuBDkybSU1xoGh9G2dSH4HacitIVo0Pn1PVuhi00PwqKTdYSOEJ38/No2qibh4lHjn0eZu4+LOkLv3V9izSIo7X74FZZfXrf0g7jxWQqojiazSStz29UPpgexgSS5O61kNYSeiWTDmW3rB4iQ8Kxp1Gz9IHH/28mNqkmkEcjYnzjFhGTjn365tLVh6wLhydFJb3DHTQj+H+/bdu32rbKhBcSNdz/8bMWhpNg7avcb0cMXJT1g/z8wBdIo5az1I3qwbegAPJ4ZSC0PO4WqFjA5KYj0gEMyCUwrf4NOEWn2B3bJIKz6y+GskCbZfE93SiKTN1f4GPGgmbXSxL1PX2dklG9eL4lVvXjQGrS4glTz+OuXoQwyz57lV/RmjU9/zgprRrrA4SSM+0fFB8XVPHn4rrthCywgsRxPnKKxmtf8miMsJAOzr96tdQKYVuiYAEx7wsDCBl/3dnYswyas0JMMY9nt1GlxePzlO+zKputmQRC0+saTYTA6HMeybmOBZePNj9AwcvWiQHazml11mx38tefJWBpVBwsdHp8E3cZ4OAVb9Rd3nFU1jiUD3HjXcDIFk7AEOZhN2kOGN77xMJsEg1UQaAkwJcCUBqYlxHQekwKmZcOkgikdTKqYTjEpYFoIJnVMi8eg/xL9b71TAWWwTCUzosE0n0TYG0olxUpGqhCmpYKDmBWQsEwkSDjNYSxVkGHTKZJhzErIsCmpMJIqhGWCcD5BIWHZElQS0klQTThNUEhYSIJ6wuITlIeRVEaGaaQriCXCX+9bDGDLxfId/2cfQhkHJwOoFNVaFKswN6umAq9xooLzWyVKwMi5whuNGn1WsrZbdyAn4+OjMdSs1XMJhe12rMLarJjCca1T8ciPVZjFvLiIZFZHgiSzGiIBIBp6kQqzkKeECBQOfanKzBeNcODHKkw3S0QCklkZkbiAHI5idUa2YKaFSJySzPOxN45YUdDsqkPxzhUrRVF3rxUjQtkkgIiWkPflwzHU22VHqJDjzoRUwBCkQMaSVJAhkhCVmnnc9GNJKthw60URdjphLEkJC0MkJGVMKtgwCOt151TQ6rICODfvFy8w7QykOrPsnvSlomIti+nht6ZUsrlhJcTOxvhzl1UZO4/WW58arACZK+tCbFTi9lCdKNac+cZ//DlTR+XNTFrEWjUDBN3jeL643wqgWMqYlLFVrdsp8hr9iGBWLSxt9ro+q1Mtux1SErba0cU4b5EKGh+dcAJyMpK5YsEmNf29pg+RdwsmQc3x0YSSsRxSEjY7EfvDkAA2inlSwHFoGTQXR0Mf6kUh43msBtmiidAzcoaKeOTJhGDkLMMmVXFIVgibFHA89EDZohxOoT7nmjRXstIbRZQS5FyTOB5NMD/lXIMU2RlSh5OvRyGlhq1KlghLP3WIGUp5FvDFlMtplETc70YCyqNeY8wGQX00lZyMap4FzIP2FAAMgtLp9y8jzO+4llAXdkYly1AjB40psq6A0rDbj5Oa9XIGlEcHH4/LJpROOwMZ91uGawpl8aA5xdy5EiVx3J0hpbLfmgF2yTLmEwILGTSaIacGBuF/cJZIVDJjSbMEQz37g4DnS1aOp1Duj0Kol8xJRR6SnA2nUC2Z2RshUW8U8VwJswSnhP1RxFiaLBl/xxLmI04kYQIrW3xiVWcSJwJQitJNDOIl8XctY37G4jKWNyNRRsKM5cwA45IMAFZQOCDqPwAAkOoAnQEqNANpAD49HItEoiGJBN80EAHiWNoTNRTL6LFs/y5megho/kHRxxHP8H6jrmT6Ya0hVnhCAP6Xrg8CjCJp7Pkk+sv+BeKHk2Y9U/fegRzH4x+r/HXynX3XY/9jylejf+x92fzV/8H69e8r7uPcW/W7/S+vD/xew7+2/7f9gPc1/Iv51/sv65++3zP/kl70f6v/sPYH/nH9Q///Yxegj+3Hpof8z/f/Ch/Z/9r+3HwP/0L+7f9D88PkA9AD/w+oB52+Sj3k9Nfyc9AfNN6s9oP8R/w/sb/P86f1P9V/0PRn60Pfv75+0v92/an6O/5HjD8hf8T8yvyO+wX8Y/l39+/In+7/sn9bK3X/Y9SD2J+gf4r/C/uz/bfka++/5P5Ve+/2P/2P5c/QD/Kv6J/m/7f+73+V//////C/+h4vP3T/Y/tV8An8o/qX+6/v/+S/ar5G/8//N/l97yPo//o/5P8sfsK/lX9I/2/97/0H/g/0////+X3a//b3DfuT///cu/XL/6tjaA8taO9g+p9zDO8ekCj/puF641OMDfmMNEj40++15ik4xm6en8AuqYVMR8HljcNhpaKIh4vUYwRClMsfBPl18fBUSHv0lf51CTltkfc/TSr6U+ETKeKPvl939Yx2PdBrkIwYcPnEQJRc75fO0PjejbiH/r+rhZPo3wlYwsf8LSfdYsEum6HEvriLxhxVISZzcw0If1XirVq02LmFShCDq38nZRMDyG7cw3/TBfhDbTFwK68dzA491VyW38cjjzQ3iGamplBAzokZss7ctuG4fJuQQQOM0yTpDhXf5GFHqJ7OlZTgEWN9mSY2znxDM9X9vx70xVJNao7667/fVNdTtldAJ+FA9Db+AviHgCnM+a/ljLv/7Z/KYUG2iDzeWoc6J0J+vS0nlmWGfnaZoNSTAq710Ddf8GtWufsdjqUuKXZmIuf5xpiy0XguMaqE/FW7N+Q2g2K6y7T0jsXmtkA+kV4v355aUhy3Cf4In5ZqV3pJKVDu1uK5SgknRTscqHk9bb2g27lPuEpVJhWpwE/yVnyP0gbMAO5eRQI2Z5JryF6Q2pe4Fx27UXuP3UqUCJ5HHyzy+H55arxQylVps1C9+rhqsRNXnLOAyuc8iGrwqUswUBK1m8D5ASVpey6Eu6JlXk8uwTfrxnGqoS2z6u+3mWkbBU/n8l6X2ehRlMSfMgTbFbcDjE8CRN58fmpMh0msgCTrnTx9uegqzePAVHwVCXgdwJIJOJgRs4iYPQ1z2KDGMyWe9bNpTc7f9Ems++XD4LcfGMjbRJI/gPubpg4NJFkwfxfbr+78S6AcwBhDJTdMqRamtLsDyXrFbinn7KkN3megM6ybGuOcTT/jAGUM6AFH0tsCqHKdZNCCXT2fUOmUSniBpwv/R6pXu112cs23MopcgvL8nwbvJSbZkNtI6aJ4kS1Wl2n+z4jr2ma6Pe7z6DrvVekYLeB/aImGxs/WjjVl4QKLrBQccO81gz9YjouNDsie5MLRiRV49wlaf7RlT0WnrvCq4tg7UPYet5PAHPJMYuveg7RN0p0wQRRWRX7Rn7mwKE6CKiEfTE8sRFXj8YCmOHf0+l843PqXgSv7H1/6SMkCnlcr9IpTTD+UZIq6MuMHqxxMCXAoetDVTjsyt8GdVf34zzZ7v5X9jc37XgX24NmzSCR+AoMS/c/Lb+I/jHKjIE1YdpgM/Sx6LmI8wPK5x+3407yHUCGjfHToW5mfhP0V5BISCibpCLGgu06BUJg+y8pcm6I7U0fd5e9lIh4Kxdgp9+taV9eOpzk3WdxURe3wahTOzv70UySYzHuZVtDKJM71nm2VmjEdFsGuFDFf7MIe8g7V5rlvltlmFDH7TaoQXl7HpjPk8Pc8h1vD8soSKcepYjw38qOeBYgIXCSuCVrfnyMdkLevUeuDTJDh9/n/By53+JYn8iOKW/aVdXKCpLiQCk0TgtogXkQipzfO7XJl6O0TzSjAZuy9vLMQmamjeKwYslDD/bKCgd9eWxizRVaj7PyjCrvRWYkyHLXB4Y40MtjREhS+TPTo0QsZZAf/z3V+N3a5iI8yR1L4rHEOmjtvutUCCxKPIi/xmSKKeDb40mjcWp5bl0n2nYTEfj9SY0rPQonvFiLAy6jK18flk3u8PCeO1DtPMt59K38+D859MbH4ndy92SR3ZbZ0EGyBOAuk5+WThU82geqcNxxk3fgoQChPt1qmll+mO3xGshfMndUb4nmzRThwFo2zveNSlnXK1+nyvcLg1xVdjGL2qKPpBCcTW2nKT+4+GsYfG7YSzXCPrio9bQQaFx2O29xKRwcJAca0G+Xhog4R41eTaZ3yue6Sj5kUPdh1yBV5Q41Wo2XPSWtM+/LBV73ucck28eqThFU5yNoF814P/9lIqP1xUr34Ixnz9oJHndWLJBcu4R4w0XC8jq2XF9hRnjonJn7mhpfVKCSbtnnODlTnI4VFPij639p0MxeONI4P7PL77CQVm1L8qj4fNYQZYAD+/u6qAMn/8tPy6gq0YlCVgrNPbl/PViPWpEzAzk79YtnLYCM/FiSp4GabrSaf5Wg+HOlBwCcEueUBGaOTrGRrhRqV9enY6WnFVs2qrwNQ74UW7trT2Fdmy8w31am/ij5+ttG8t/n5ULYGJ45/KI0PYgEapgUwA1WbXjQDAiH6J2cHaak/FtzyZoJFXzpQpN7gOcRgVLb+DGHYwFJNqPg20gR+iabhC7ZimiZgPDMTh2+yiabQTgNuo39lFHm0Fquu5tHHPirrHpHYdYtEPZBXD7C83P3Fk8hvfiIysXNbfH9iiXSq/TRn09m3iaH72wM3OTtfML6g4iaG5OaxyGdnenFRG+hBjyVVKt7cnhlvJCs0WGrXsUk0jYu1OhUtYycNwwaSS8i4srMBYMhDhOENuMHateWd0eWBXzVb+w2mVx9+gvpTDro7SudvstwgNHYK7vIAKlkmbEw0zGna32JJubr43UK+mFzkdbEw07V+N1RqxxMCx2BT6+vAjcMFoakxjYs5O2OYwxKxyaApzCb+8Ms3FjxwH3oLt4cyYUIxB2SUyJdikGLoSqzJ4nOmrHC5D42Li1oRQLZ4nzYHnFb98TTI1BVAjFRmv44pS1RZLVjZMGkMZ5OlbdN9nYVdN7SgTIoaFN18+W14lrLh8gVWqK1/zFAgFxfinOLguNYIYVBee/Ylf6dWnUawoeuSHT7nseAQ0OfmAgL6EfoA7zVh6+CoL6shH7PIoZvuKogfNJCJgMavg0U5naSsvt8S20K92U90truQ7IXCprYUamk+QbH9zmOSUS8F7DuV5Y79N7B4Shh5Tm7CDZNoA+Jky9sfImXt7+YvI/gC5lAvHTZY5IauL+rWya9ovuL0oWjZlBxlE7iUw5Imapy4r2DpYpNeCipUbt+3C/bmdq3cRv5wp0wkSTBmUMLey1DB58jfg+QhLEMlrrLvoAh+VLZnf88GliSBavkW9n56iqbvN+WEbC55UbPpiVnYerHFGWjIMWgMatSY0QoKDqXQOrsYFauuaT34tI62XmucLB+lp+hcCQJG0qQRPwsDTRZnuVqML5adFvvP3b8B1rcwMfyt8l6/lNSyrq/F0kTI/hXszi/WE6TP7s/JBsNbA94tLOkLovslj+hlE3tQXy2aI5rKdkMnJ1Cj1SK+STntrhvIw7iiMDOHD6owIIX/MIPsYYz/uZNhRvE4rc6Y8xyl2aPvlJ3lQuYjb5zPawI22Ja1VhIdrGuO2LyTnrF4SWHbrQ1kQve06Y4Q8A7tk5DLCo8KMFDqNY+C6CI8pLrrtCFh/nqvjbHsL4uetthl6nQALD9y/L3uZUQPyzXM3FDqbSSEorEY+vxS70QaE75u/eabjK+poXtk+c2b0uZvAUrivOPzzzwiQzvM8nnPkGmacrfUCBgMn+52EifGyRxg/L9dRuCw6CJsKlgi+Q+2SgyZ7oe9sxwRuBIFDvp/jZTuTsperjDx6X+YTuWNA6LPNzdnxCzDY83CWTw7XYoPcM1RI+bKfCNGu5SnZa8h9rI2VZXCD9s5CeFywWWQB0JcSfBOKSRK9peKxBIdgW9oNmdK1BCJoJPeUU3CHDEDLGnGTtbAsRY5Py/vvwdE1Tj+iUyxC/dGycM36OjhvOVHbsDwKrd1yidFfl6mbYmgMB7/QKisOHlnjA14WkhdD3eDw246m4Mxb9h0FFMl8QIErsa7Ecg3xTe/v0d80BvDQDy4INNLApMYUxIurGdztxX7dLHytlAaLPHLDIz3yXuMmg1ttlPmwkBdzJ6pNgy0GyN58seab8fm4Di/NIYjdvf9mY167oRXswWckQSMenXuLn6/uMEFEK6RN13Z8Y8s0TwHLxR7TNKuQxkjJIuWM4+plmfOC/MmO0a4vR6UpvwsEF1lQt64r6bs22OwmrOPjR7cu2YcGPM6TWkG9C1iBnzatjhn5D8sFjbDmQ10BZe3hDMtcH77GcftK4qgjvJ5b66p8/CJLqnFZq3obeqFFqGhsywbutc/uEG9mOomquTC20ELNzU3NyXHP6zawkq+kP5VDZ7wEUKFvIVWMv+8H7RSmGL8Kf0hEjYZc7Kpvfeb9WTcVhDS9enMK5UrS+l2pwgYJQ4ZJwAx5DObI+jJNdSbRoW5BzGNSaBROr56AFIk0AxR79ZFtKmNLaKElhHXejQBDFveMMJ9sbWToWRH7v/E3Wn9FcqqZAn0pTltAQL9qd5TPoAPfGk2K3cbCtzY0SqtEoFgyLrTdjJ+FjxyvbyiqjWGhuWYXb+r9nEm8wAREKyxPKMaKKDktKvX2/nQ8pNx3gAPy2/ZONr6mhBYVDmh/nan4bQ2GKAgIPBDfdPA44efnYB/diQVGHlhFlVlaVULy2us+XPvkJXMBrq8l43alKCoFdrITrfbjEP9cWeDPgobk4WbGfrFUv1fxiahVbrIihqhU5RoRQpSmmqFLuIxWa3pYrVjt7VMEBvJv80g3E1OKPQilVQL6ZpJ8+b0MgxwPcoSkWHTjZkuFwQeCzGP8xtn/F0TTjI5ZgGJjx5rULxBN4s+/qWJy4vJkANb+TQWqWELtNjcOvRzjvkVNdTHiOZ4wVBPpSTpXn15FzoVcoLD53Acd2RDPw9zwEn9IyzDL7B66R7JB722K134km/WXQIv3gN66Qv22M42ecwXmlJtvj7wPgPQ5+2KMEsmGb+gEMsIa2/x4PBOJWFTxWIcpxFx/eCZmI2t+ThxD2eacCkYLhXqzQ0OMn6tZVZglvOtMC/J+ipI9Pb82ops7ofMzro6wI8nKBErb9J1qvTjKAJk2Ez6FYWC4R/yMU79q6Q+g5zwLJKEABCf/4VXmlRbQ6I41QiObewt/ch4iweLgCBGvvTymj//kHFkuXGNJ88AKoCvi/6ijhSzqZM92rwDl7zeZaieXyrBEpOsRhL+aukiY8/EM2RQGM7dncxkbVnt0A1lMsN0JBBRWV9wVxk9VoN7RgG6fsKiWB0RS7CpY8yef/TMFUJIbE26Z/OWhq0VQz10z/6e/2UU758fopjnCb9q4By80HaLgx7YNne7yVL3UP/YIVPaNQVOYdBNNMUEeq4FcSRV9hATWrhbEjihe4mMtHMB1FPBFdB/ZPK4uobfUXD7mUQZLUNEhYIAONn9/tXrVQY5BHjyOE78e/rBMFlulU6Xa9HTcaRwM7ywidOnO3VscVSAnlkEsFnlV2J6ir9HJ7rQAB92RECR3eRdDE3fDRrwqXAgNUOO4/Vm10R1DM0IAXT9P+5506Uqyl+8WIk39DwAd4acDtZm8ksxaYPXIYvfEMAgDbhcMzHbv+gmE28BTWOdhUcV5o+5mu+hMCpqGdJritT4ej8WvblEwkXn2Zb28rxtPYLaB7R0iR1wm8YmkkxfB8tbI5JUAKARdRZOAeD49ujaIWowsN3R5FvZ4Zh+mrU0JbliizKl7X+Z5oGJAVdkKMIcimVdY+YzFs+2V4WiWGYaIUt73IH1yUbvfqYf7z2id7OkbXUv0ktVDA3WnXShFUNqdXX7nki5Oxxx9+0laI5wb9d+hebjNYROm+dwSjeECYfGD/LtCbVzlmO5eqib2wEBFEAHlRiZmIoSKSiO7Cy1mH8yTB3W7K0Cqt1vGcVdNacOMnlPdE/RmZcJur+RCN+a3I7nLmMd1/GoC4eBA36U68ENxQmxcaimyjLTL3ee+1snp2+1sAVP2oJnt3xzlPSlJbxePKz5Cmfft+Y3ZmCQc4dxTobuL1y4vBgSktjOMDMcRrvQYzrTJtITI6wQhLcZxWLmP8oHjwr2R33ZVpGT1KTM63S7b4IVUv4c6IcynISf9eZZWTs37DDoaVlfPUhc27BtFt4pqviHa8yF1mpYFMgVHGU67eiNJofWcZOvoMw3RxD4lQNLhw8a0XRawAMkwLh8tqg3oS2Zcjzl9hMSM+ckZGBLg0CSfI5D4eY1zFJ4QQjnaSMhIlSmm/BOpbIyx/jGNCseoBrahcqPj9OdpMhWkwfzy6lH0916YF/Yv3HjYXA8tEueOaj7UOeSRQOvuxlPd3hECiu4RWvG9te3WiIX/mUGQBAXafwQa8oJc5g5GoUIxzvpJAXiHopPkUnZf1BJvr4dkQcH7ya3MwfrFqwUP+/6vj9nySTZp8JdfjlKLT4XanQSMH7dUNqqo0cwB0k7hmeEhpGObVyps4HyADVm/OAYfj8lMQXhTqXVjJfJLQiH//Jablas4BxxHI0XA7kYbG7mGsJYB5URuNC508Cl+Gjw/NjBE6y5VDKsob5TIcKt4xzYZsnYPGMJdKYD034ZJm32lWzeeRURXdcTOCM7wbKsYdjRBKfiOxHVNQ9KvIF0eIos2yUPwTGBOdRYc0MdulrrCi+GBNuV7tTcJUB2dfn/u+lS5dRluVDt+ZpFblWPt9tMhnYFG1vQvY2WYoHhWLApbFlXOp9NP4AYlfgqwCkFBn03llLgCaQMnBBHJVaStKugKXUBo4zrGLxcbrBXk3j87T3UtZq2DjtKoldCuwMMfLJkiThks6NK5QP7bbZf8zHNj3CJVrNTrcGn+UAGehEnvyy9ChI7WNl09paTRPTicQ6xF6CYz4F5203IzIuUnyq4nknS7901c8sBbphyF1bYWOPV6tqp78b2h/4YnBOzSTSxnJNuv/8P2Kj2VOvq/FRYwyqXYZveEwLwaMwfYDBF7Kl/kV00Z9tiw+EWqNW/JM6Y0yeIOs6KsqdB9WFFXro+BevOYq6L5RGG+fGmEh51U1JrkvV8vD2Nwp2EKs0SJx5shBJ9F7GMTgy8rdyxptsUI3V982WqhdZqptuIGdajTtUy2dx7aT/RgjQLzbxILwJpu0/v4FrIPE4uhO31S9nBCr1KBizd9300dXscbAg78lZEltQmTk9L3J1ewyk5oXlW1HIZZyBofznDbu/v1xGKe6ZR4V9deH9+LK2Y6VeC1OeqQSCTpf1R9uAxHwrgJYuu3F7unGQzv0tOxJq4IGUF6MmfytA72KL0U2o+98b0Jp3RgC3zFnaX1YbKQ4+RYXSn8zTelX2nJzYEC2dpJlCR7DdNdAKGDJhdiwtYG0AncZBVRG2h9CRX/NA+93ymF9YWGo/LI/+L5xNzvMJ4I9uOGvuHPmgrPIyWhbEzLX4puXwKyNnEQNPO1Zz6grFN3hp5+IvRAb8f++jfIpWP8fV2eoQHJ4V/EFIRXl1lr407pu8fGl0xTLxN2oLAc0rRT5CLz60eOkTGSnQnik9NcHUynL1A2VCgvaoi23yjBtL4brDe3tCSWnyHCULSc0zM0sCwfR5cPUbqz7xbgdh3uy6EIMXy3odMqaDWbB+GUxl6O6JTTyMpuz1uLLFR3VUSkiY4loMLT5iBkd1lrrUxVzZJeI55KINJvLAkZl24xBBQmz0HhRCaZfpkqb0DeOoD4C6WjOs6AFyy07CZkl2W7EoK1rjaSmjPkO+aOEBaHFHEyRZX3L5mjiehesw3Bzx6oTrO9jKHkHoLOUAYb4v+VzKQVxHo8QcDmti0jNReN0wyaXjhFmaCctlc/M/c9lup9dUpZv6YYKV45Lmqmcg4hhY0U7Icf3ScFApNatcu/JQQfwIZZPBd0xlddWQnNuDMD7UJ1pTkiatoLB0FckBMrVpfu/WrQltIsiymwaDzPYyzC8M5b74JiGCSpwbE6MHdhos3cU+MdaGSxHoB7AWXrT5Qxf0PzJR+l2i/kNsDUMCCebtL8o7OFav3SqzRXJ+x/m6thnMhK6Pl79kPdsQvoW6KSNCN987cTKur9YfsvnGuywenfl6fndR3hGuXe4ZlKL8OQYAuA5GtOWBG0IKLlaZPI6RYv6/2k9WzHUxLaokvK7YJzTRcElGg9V57iff3Z+nTl+SGmCNAYZRrT2qPc1aCdMubxF6YKDK7ltqxqTIBrEzx2qjvj6Y412WmKh4lMqLXfGfnMq4w6wj/nSht4Xg4bhj4AJu2vdVEokZoyqOyQKq+2ehbzmsAuOuaIH1drLuOq/l98rj3YHqr/v0SUOdnIrrEYbzL7OvTEMQhEfjtKcjm1h/9FIFHxptX7P5Irza66PeviUFm8JRBLNpmlX/EukgSH5qg3awKFvEEWN9jVYERkbpKnvE+n+Ok6RnOgknotrudGxXr5lO4JpuPTn6e8suxc4MjD75CPCI/Wc2P//qfk96ecvQpnFfhOVmgkODxb8hIxCUFVJ7E1S0S+9KOR2NGFwLB90u/7YW6vPzeuL1TDYXHU01u3LdWNAPSD6v5H4rRCZApy6ntrdP/9ZdDwnvONQp4bpOAtZI7YDoUBbsfbU6BGBt8PCVXbzsUtNcl3bJJMT1Kq8UWo+WW0ATENUcTI1FJHuITPAXW2RiqyHhyQk7iahAXXewaTuIhe1eDPkZg+u6g8JuxOQQKbvscadK0q2UClg1MPALCPcisT7qNvDfvn/hbq1EMKBu6jArkhxkC2MlsOdgomeU+QEq7MotLoDUsX1SLmeB1eubp1jPxDJLLRrS7QFiI+Lv1OmhvsgqMzp92KDRSKypMCb9te+CXugwUdS65/szDTYPPH2dTzBRIJg9uOmvZ2PkWoQfFwPPB1VhVeOyb+06Ctrp9UKzyHwAqZ7HcO7sEbhPdP4/Lm0Jd4d7zeMn4MjZGLPepZ+2AdHl2wDbIim//N0BnV6HfHE3uWv34y4KTxhIJfs2ND1z4DfYqc+9TtIjSne6ELrlOEhx3+Qf0LKNhhRLJdc9XKF0D5bxkhhzHRGrLQ1ru2UIJsKSbKrHsfD/SeCp29nSYPrYEoRquox/B7tuz3hIYx9L/TeK0xnhkUDBxHnllJTwqS1Dn+KNZr/t7Ifr6+K+PGNOPVXvEPYNiK9gf2r16ZA06STOjIFYCEXZ4EEPCTAcqyVbbZpBHZ9XuRYHs6ZJOnDHI7ZsJAEGN7PEStcP0xXfdR1EQbRaupBEzkMsP4dXTJ4HpVxrPsTl4+Xw0rwn3ojKsINLVG7ps/nwxmXCFoEh6pP4iLEJLjv0pLrhcza+eg76UJpXMa4w7+LKqkYb27E9xb/HaPxt/rWpscowx3SEt0zBNxBQbpfgEpEN7utER/XhvIfCJFfsXnR9+aPJ10MEGKxUe5HjPLKT2m/3dFWMppTp86Wbe9o1juXHb9690MepY9H8RixzpwRZvhRDeNEkDympyf9+k9SLmyaLy24ymB7avWYqsI/Sm5u8/T6tkdlu2ygGEne2439CKbf7pOtThJ2O+nlcX+dqmD0Yv+rxbG+YL0nPAfX64nFx5qnpxso5GxX/QIV8hkO3OLNlr+pBtrQaZEoUOQvmcakoJbBrukHaD09cQL/R3Aml9NdAa+mH05ZwEme3B4U/nnPwsVGqxqZrgDZIynrkUAQxyyFhZmpvjDohC876zPl4A2c1vdUDsiYYV8C2aTh0QQsFSwFRTlscRdA8rbF/miigs6G4B6qbNDBHBGpSE/SujONhaFQ5Zh9MJyo5te/9DcLWen9RaP//+ljJWU/+UnB8tPoIpR6l3Anr/yqNKAk1vtkOe0nWvL7Y0trtOmV5b00611GH2CzK+H99CURt11bmg2Kn7VJ3QcxGtaC9BdxRESF0uonhdsIrUfYNTqrhjU3nUO5eOvc2N10/iNAMWiUX66O8YVYRg6RRI0ARBA6iQYQEHkdrOPaMKBLi928o+uPNpauAc7xtkz0Vuq+DTaLwkui25CR4/Mh/RmH+P6XaukOYNySgjpFo0N14bi0tHM4LZvpSe8wPhT9TVdwcBUD7VDW9DrQel+siF7gw51z8WjG5h9iPV/XN7GoAeNeJUYF+wMthJbMck6wu2LjtLADoRhiOcXgMjqqm9WcqcHvzLvGhiPgGeh7TYNRmGMx4Q7ZaepE65cAMJKzBrz+w2wwPXbqhrBMLXiXNCzOcZaeXfaBg5UJzfvG8Q71S9eUQf9MUSGGZnT2eNMcvkLU6seMzOJkWd5okbriailO11tH6SXIQuWH6Zb6zEp6E0wvKpRsYmbIqSX9Rl7E9SfR3/a7x/8LJBFk+IeSZuZB3YunOFMy/wJ5ui0m6Wxf45Eg1TwJFVkO4lNqsgwdM1eQ5kn+MyMSpPQrna0Pn/rQMOoERZVRwNyTOfddgPfJ0+Ww0Vb6QhalT2jUe4CorUMt3isl9vcYNIAeJG43yVopzOr42OgGzCB3panY9adp8PMbd6auZjL62KqX9rQE7bRsALOlcn6xYgOO/RsLmQwRVKM2APrUpNnecwFRNSIxnB+CxPWmM/syZ6h4DCh7/7gvCJMVORHaje4xjJqlwDtGxq8zv3aQ3kKDcgb2T3d5yTy/uJNSGBc20aciCF2vcYRMjm7C9x6SiMVMPJybZ1C8zydALP0Xx8Nbh4dmbIkwFTZ70Ls9nX6pz/fe7BP24MxWNeI+UeSgV3XKOlEYmJXOgo6zCIotMW6Uq1cxzhgxSHfQTTu2EUTJauPMzjGUUKIi0hIC4miHFq9Hn48APzp0uYmlEbIeYr+vkoKK5qB6W0a95rDnL8Oin1sGHcNhA+ujVi++/FTmxTjzU3QGN3WZkYNUcaRikV9yLMjjCM0UweG3ZgsSPV21S8CLVoQT5vE62mLDWL1J/NA2dnnlu5avogGUsXQUtFQwzRWng0db6ImC+i5g5nT8KFnkfQXjHNwDf8R26tCu3Tf68vfuM7Y7+5oZooHuc6JwW4WEcCdCnX3W2Be2pIrNcHOvGkOJbrCODcHVPrTqqY0JdWAwxdj2cpVysoJImozKlAFggmOwh5zOu2Djm1vhbqvtPCuP8AA2AkNq0+O3DRwHU2dEaRDF8VquAWvEwFgX7AbkU0pw2VB8Xh2nLlzGEBRUn2s5Pu3adj5IGJzDz2RldteMdnfdLANwLBr9m6F7ElLkZjxd3t2ZzgMOcnZkQvTzGHHtmKmut9+CeP3ZyC9M7DzvY5CCaODHMSP6T53ERLfxTGKjwAWJIBjCOlZZFegkQ/bAmB37CPptUzP63A9ORz4A0L67tUQrLdNOV1lA9hFT5Q6E+ZmTYaZwpvWBiEOnMgP0NKC0+XGurjCj6btON6fRcp0Ob5PyOQXp5gmTv3j+q28JQLAemrHJiLF5aZvCBuxqtGFNPP7ATvHv7g4VLrhOyF+2D3DruA+OAtxbUuWTeKTJWup8zeXkj6djR3HnoxIHMivm1DSDMdr/tKzP4+a4sqibKpA2GVI/vUgWlU/MwW6ZytwCwMS0UeHkdiXCTKQYs8Ie6hI5zxHDos2imMQUh5OprkKxF4866oFu6JdcMYEzD5uVQKlvTLftrzm5thQvmQhjVLnrBMVfbo/ULwGsulD1ZX5Fv8YsJ6rRfofXI/WywOtSSLjln6zSfXpKxPDpRP11a0Yi5yLxFWW4d8Ck7bDoXXstfz0W44WHB70LB1AmhqvFWcMovH37rVqDeOuym9OwoGgFgL5prZhMWTBZ+r8ALfR9ZFGG/gsdDqxdsAzghYAkMNbuUNVDbBhwhI44yM6/RfGO2xYq2isBnJfzj66zRQCekb9fwQgxJko9czTvZyYrJrhriT/CQJuo7Gga19eiZj5BTwFqacjKgSuwlwS7NVedqT0HisBiNLFutFlhoyE+PzW6DfKuTHXhs/UULxwA2QkiATfUgXE3MixaTdt4rFJ68kz9Mhgd9tyaBB9ojv6IMkmdTQ4s4WD5fP3/4ySMCrA6wXfRPg9LXPxYw/r+wVovL06Vh3kOS775Zn8jwmDOuYWBAQ9pw5bMY8e2YwoHyiH0m0m560oav1EtOzae58BVwEMKt6WLDeO9vqt+E1K5Um+7XmOSqp8SO756qDzXRU6A4HPkZYosWX4EGao3keekuRiiuK7hm55hobkE958eYRrqXBMz3hwO0gnl6OxRgkyb330ScFP/souv8iQ0XSloZ0WATUk44/D6jUyti1vdt2QL5CrUzhgk4XW/eSlgkhMEzJM1R/6jJXXp9SMU4l6aQCgAd9gEOx276R9DzSvNjGZzZReyykHOGHqLPJh5UW0TuZzIZYvJews2/QN81zd9u0ovcznFKDzkEj0wPuHwj5HZsFkeI0NL6vF1+rndHD9CRvUuDzsmtwX27qzbMR5FvbsZOF/qcZT3wATxjE89k/B/vDipUjSeu3sCZoIwToa/NLoipmuSwBfjFIBbG1G3rrKW1+orFpKKYUVKqKzsntc3mAIUhUplU4MMYG1WJzT9euTM0+dYb2Jrkq7qFHgh4vdzBSWpOwuiE2euGRCMVS4mRYavciZ8T3HdQqw7hv/3rL8aGjX81ejGgmkw9OjXxC2SlMmD2PlyGU6ICJuO4ybHlckR3k0A4kxY8bQCjLRY6MdhU0+OPsymsR75pwdwILuMcOTCxJP2fAV0q/jSPW/DgcN7egz7WrUzBs/Vl1in0yOSegndgtUN2TPtTVmzCl8Rss82XJgJIQrAZksqpY/V/YBHjz0HtoqTo0uj5MKF43g/aChIri9I5aACgh/KsDCmm69v5Rd3aL+umwWGn3xVZ/rpEGBTE2kTRfra/XUsg2w5I5unFho4avpvXgDJFjy6Hw9iiQ3+DiYaJWXIUfDh+vKuQEiTGOB3gYMmcTwrmIsUrBDypFFyWQRB/wp554MPOc8ELrOrby+kPyx4b/97K1/5kT0IDsuYaMwRSf0JPkdBqf8jxdCYjRzpr3T3Y24bnRu7dcQzWHmkDtzTlcb+w413mTqwujmVwlNHJ99ldEA68CFg29QykPewr7hfR+Zb2+BdQKO4Zx3je1g7Ug6/laKbhPPJCQcMbEjrWc1oisbFokJS8vTffanGArLTQ47YeceoWjN8P/5fOzty2ZreBx3Xp2l6BSeHMv/mftLa+S4/ejOZKsjRu5F7/6wG3DlOp8q3Rg8xgFITVbjkKksp9LQxSV1rHZAES4qZ7yjaG9bDq/7PlJglIhLw0lGvPY1Rs5lfbXdmDDeqCfl7w8YHhwetEmwIMMjFb2i+FlWi1n2M+BTM+3mMkgM0TY2EBwWFCwQ/AR5VLk9qzdkm+62j8iGY8OwAtNqIPtwIs53FLtYd15gS1TiajZeS7KWErT0ubkUf0N49Wskbcr/EFFKmQROfUkkxVKsqcXWGiIKErEYqg3ovFp/Nks+nfBaLjTsd0SM/68PRXv+P7HfhfEIwjZIMUXlFTMTgCXQUI2RsSfe31Co3LLUYroldGAHC42dqXWvX45iJgOAG90H8rQMSO9URyAKLAigTykU008lEp+fJMuFZUKdJkBcrFIRHLWDcqHlyHuJKot8hQvLSc/ekFO8FFmPLwmhGgCR+ZhP3HWJ1myUWCO7SAkBak1Bfe2bcg+pMqMpuu8qj2GD5RNkYPCb8Xl4Lp01tNrMi8fJQiO2JJAWE0vNG+boqe8U5z6+pRAI4AVCgdk3gyNXFYC6AChB3xRmoLIzuuFMV3fKJinCjBF9/IESNxtm1oPtmKzVS3EK0QHM/WfwXA8+mwIHK2oAyaz4vifKT7yfEjmoaN/E3/n916bpvdasGL/SwZtE69W8L3OnUTv/+3rqaKp/dPZrPgy0PWna0uLjhBqv3QVUq++xAAGiWDIY6wVmg7Lvu+2Vaq5byVGl1GhdQesoqSeySWd9luYyMpoJ359Gfp2W1CFtrKxi0mjoiuTDx8Pku38k457IP7AB6u2U1VI2UM9hnX//esGj7Dy01j860UW4dgMaXlYKC8NqbyTjmrTIfrQIIEmTjOv0MbKUzCWawZ9fI96QtnCXF6glqzoHzu4kZ97W6EGwXjSnzElS6fQWP7ZtiQzZXb8cWFsLPfIS5/xEDqjjtVl/b9MuKlC90itLuGJcoWsrYuHikgWcwkruJYXhbLLYxEWfnRk2IZd6SyjooBguTRXPNPd+Ww0iFch0d4g86foKkyWi6YCzeP/TOp/+EK5xQXpBMxNGg3Dg4ntXM6Bt3w6rAOxbx167DzhLN+eq8X2aTbJ435AWQ8aGN/1F8j9KkHB56PU/S0ZiMb43B7+SnSwHS2wka+EJxBg5v7WbNaNNusmunJ5b8wghlyyCwtdWjBeFI3MGyrSRpvSddPzkrTn7hD3kdBGKZudieAjvPUUEEPr+6h2tzTcZH7vi81f6yEtjFyaKfzlMHznNxu+HxJPjLmOqNp4tygWQU/FAnIqJlFboieRkMLaqThVRtSj3INEyAUXnwBHrSCTRjHVFtLZ+TVLPQf/3zC2nGlzdmwMnbswxUU59hFP/NTpaz6WuT4nsccw8xh96X44efiUc91Enf2T9GnK02nraFyfaQOt8zXQK07UpaMywELeO6jkb82xHVYrOzEepXX5cOd6PkhMCcxKKjm5K+sCQwVYEsEGLGMrqTPHUs7DCezRO97BUiR0MrtzbicQuingU2Y4t11LeHl/557F8O/s3yqRLfZZxYFTyhN83mVASU75dIfaCxa0PpBdM4gkt7OW3OkjwkNvaavfl+cmDsZIkSmR4A8T03uY6injEgbiJvfgp80+P6RIFFBejw5JVHkv3+JZsHgzOOSZnQSgGzHcz3NEWInNwGaN7h/oaKAWR1RMU4Oj32u4qcNVisE/hAkV/3WsxKjQJVxjrotzLgxA3rJHJKzIcjbVVbdGy8mAzoSDc/MCvyt8tNaU//8zBTupB2I8QAPrWrMgDldieAd5+itLZI/CoP1eDhSibTUvAqfC/pfyCUH0AD6NEQ8h734wVhsi2Y+8SKyrGq7qrZA+vh7YBd9B1A7lX4FrgDa0HV3j+l+SELI08AnQRFOHdV7+lyLT4H1wzLdObw0eK8n4z+gmKcsVWlBTAh5XhahR+WbFvDxXDZnQ64F53Vtk64TKOHb5ZjE9Tq+FDmroCHMZ9OwzqGSRQd3LIhD4Qow5V+CBk4vwjfZhbX4ADFeXRJlo13FL47BRHdaHwR26UwET5Sc/0pb3UDZjEw0JwTNJp9OGB09mimWgVc4HERw/MZxpGrG5OPYjj1vVBnqhybMW7H8/Fp9P/OL+XoUmfQXHjakmHtqJT8/W2/o4bPPNIJMnvNC29AwLHWph4kTl+24RDplQnK0IeXefwdz0HMyRXqW4nZOS6S9KxFskPrH3mU89VS38Sqk6IqztZjkr7LcTW5qcDDDmL5HNOYaBfhr1Lus2BEPQ7q4AqdnrfKzp+Y/swqdGK467IH72k24PjF/7Rbuf5T5RMZp6CKGTPbnZhMtHQwtVbrbANZ8RYb4By0D44t75hFeo2dDRJxpz1ICO6PmSjv65ULTO/Ue9hcOpLedYEyHskjLNCT9xl82wOpuNf/YXN1hCGwYSJpb1k33Cl+bOll0bus6IHvrtSA84CBPta0F41G4BG7FDMS4otuscz86rYcorlgTEJH0YkmLZQnbBiCxEc/4upLOa8Kk8GQo7Qi6UHvG9pd/XlRpM39jSWdkr9nrLX2sV3HFnhg7R+YZDqnQ6nWg4lZMD3MYtaOqS6fox7yBdkAhnNHZmA7GhS9wJrksIUeRuTzg87nUtHVY0eGfcuD1p94k/OAyG/jsOJoJ/KRKn5Q+TRtByLVJEpmHbB56fdcaFHFEkrXhNrbPaKEDkoesp8oS0nh8zlbmyy2oWm/ifZV2NQpJ1A5PifwslQgxBOFJxECWGCGeB6hCV74+SCgCv/Sxod5mCUapRXning7Au1BTN0b+bRT85ufaYx+WWBhFHper+VBWDlZhbSvW1kp4B4r4nIUTNEqavFHQAtJeweqBJ7ab+bTt7n94JSZSaiir01VXruzotMAR1DTvXRCRM+Ohu+zqTChRtGdjHmXYEG6S49xD1PkNHLMm06Lm/C+BUTgguf5UNGRsMhLyx1N6cIUdWmZeVagAp0lb7ss3C1+40wdOD32G5lcXkFyJ/zmKBC8hpnBkauRTJiwCIN4r3AfwQohN8ckdgJ4fvr+M6OcYXMpMUKu04VMAmhGSGTqarfU9Gn02yOE8CB+7TpxJaaUBzHYcXVPXzOo4zBgeC6D2bGOWMpRzyKo33YZvid0J0cg2FpA4CwVbbaiOn0VlFaNY/1GaqBMGYM1tbUA1CAk5TL5Qwt4GzMQg1SBZzU45JfOGADz6frg6bTUXob5cGRKXK+8VX75yAb63jfrrQLU/qjnjJG2wSfBG2cgjoNmelGnKtf89rrvv87Cd21agILlbKk4bohn9h1FRlgrdh2gsfSRcxGET72q1HLNaBVaseU7Rip/4T9h9y/nhSv31q4+PjoqsN2BESFZYKU2088bqwGWByIHVsEzAHWgUewGIqfQPDf65T+GU3JXjN9yJVRLXO4yitnnJyv5yVx+vc0AN+CHc5/oidd4zL52iGpvTgJ6Upen2/yQ+HgO2oLTqo70oAnZ3Rri9DtTEV0Ff8GqM8+UoEhG865Uatyd26J1MNmgs8p4aGM4fDbGVY5nf5V6sZzMeXbJwZ204MxhtCl4YAM1MAR+IoDixIk1lZhpmfq0j3jUMf6FJKAucgR1JXkcV2Du2bOsvIYEMoa8gikxrHkj0sdDp6AKPvSZ/uBySXAYO8kbxstdUQ1OoOrdvnk3u/amQTrkp5m2JqvZLUpy7QGb4N+ND8rNlNI+9o/kjzkFNVOJTSJKxa4N8QPQBWoSAhl089u4awyv0P2WuJYTLi4O6CdWl96c8MrO1JifpGhwZd5hnnIPa+E8aKJw/BkqNlKD2FLn6kHhFriUDQ4IcSa7CcKLfPjKGr2Eq3tx7d29zZJLL8O8gv5cWWvbRx4yl0dRsRYoNWPuGGMI0Y31F9aF67o+G2cJzDt4w+o5zULw8AorJpR81ziJMhLoqTi+qWkQSWw1UoqK7fumPVCVuhicIKuGaa6SCFTGbrQ0ECFNxjzX1eplsMT9GFqR3Nubp0rmNF41MIkIrOT6/Zhy6FA323oFJNpNoDEiykUe8k6Zpt/hzSOUPF4vc6Wz778YEt5wGL36p9aZpUHxGNd2jkaOca+JOtqRM5BhcbwnDXqcaTaegPPwBvAHv1+q5vLdzuQMfK2FEI1TbL5iEpoCzGCraO+nBSi8bB0frob/SLqYWFCYYm4Q9Env7XUfF4eFFqTAPfOPPD0VeO8GQ/x/PA8tcYcZR2rbr6s1UMqpRbKn8TL42Tp+bIBUqUjOYmkBMGvtKQW8Xo5w4meYe8bjwC957oCo3auqiHzwZVzVHsqOQhmwb+85pgdq/NRb/b+QIOvRn1MhS9Y7Khc1JOXzf0zZWietYn0Ev6vU16j+a4dFJC8fBxFQv5OLMYsKKlz099nk7sddSeYxIuPMHMf8ii7DGbjfnr8MeyxKpvNlutsDe98PzYBhnscBS5MnG3V2WU0zYTurBvt8dJxviQ/cpUz10AS6V7a61GWiMkSGvus+yDRijutogWIQFH7w9HUC8HNW/Vj1YUsvfI80XanW/MvvBNvFsv9vKas9hlvMb4xlq3uXiTQjAJHPzzhbb2NGhxELHxKzo7qjiwL3qLrIoCqWCmGIvFDytkYc+XGYk28SK6M7GRdnevkO28wpC4tIqF5I7bIEc7+CAF/+uqZOSg4ZDAWJEDFnNNz28zRRxL7ebskUhzPqjGGIs05KTJRSD/38fU0YrzU5lDrxZ4npHs6jIlwAKiHVAxMm44tTGPCslNNM6YJc+brBwi64BOYjwjc3kxF0QDW/SOhtiyk8j/iNVczSMh8gkA97DZhCtxErVBO48TN2nKb8n5xUV+uT/CZADh2Tlhh2o+Wgp4d7HjaCmL//E1Yi1xRbKbkWXI4dhQPAdXFGT1C+y8BmgAUuz59Uzh/hOHakfWUo0feiPow1R9d/EO3SUxvn7mtYScrNHxA8SjV2ThJ5Xl595M7+ppmr7rDWnA8kejmW5INZeeak4xILvHbJ61HZrlxbMfYWYvhsR6fPsELbRkalhMUxd3Ig7xlgDu2xgAidhZY54ntwbV4gePagoDEhkRWIIyDOq4s2sGSyiyMUVKobiKr4apjcU63+tUAhonWg6o8/0nvf2p4r0d355XJphpcSVPdTXgzKRorxbQWF4YnQ+4lD1HVx0QdHottCnBETE/GLLZGvv972qqf/ndiw/IFNSpoSK3VHlFueXqHYiOHL/lb3twGBOnjsSJ/3wk7M7G/74K8rWw6WGR+qZM8lxutCkKiDJVNUlRQTLxJQQ5VDDAF6DI9qXyjiboWAMT8JhT+rf+x9qOTcLlIPnNBFCD8RWOkl0+b2sb5EWUYf7xvOxmXnoycz5tlJ+rhTh/L7uB0Tfg5nSXo0B07Cafn/Ob9GsOaN0roJ1E/J96KwIIvwvUtF4BavqOQt2iGWPwFYTOJw0mH1p6gjZPVJTWNiZTi+Hj4fVXg2m56vzBoLVM337DeIdsntKTG3E5HZV603JIrb4vGUuvnZjoc8iEpJez1vbIZkTuXVXaTUZVYAs+Erq/XHc4BYF3p6kC0Y1I2f8TzZUgARm3GTHIF9UhiVpG7NpYyxtiaX0gUy2VbXaiXf4BcruJ6ulhab/t8cdk0ebgOW/DMRE7tbj7aR3yeJBZ8v9mmdm8nYkJ48vpy0QblMYQkIco8/lZ5ArS/FqE653dgn1ALVVxnEYe42R11iZhPpRpSptVaNUP1p97sModwz8JmkZ3N3ZFFPpEKhCZCQqzSthFZmE8H4/l6FB4GD0PKHoqVAZtvzgcRs+loFmOxFW1lFTPIY4zTsSX7V2CJgd8I60B3NuF84Q2w5qPEVVDB8pLXNM9WePq8VvrcssJIFaK4gieOfFRZtDFGuzA5bottU27VjXUqRkzAA90m7LLcPBp7VKBNgKX081mlcEISFO2u/MZ1OKAXwEIBQ3SZIn5/4+TkpVpFcXPT9jYyOHERI9rNfItP3cPUmEfMk/OToN8tlpwNAel1ujVsxRS3LGYAQZnlzHQXBWdEi8EaPMFXl0KDvmptkV1yNPyAGnbvHp1K2LEACxvLSOYo4FUQDQz6HkzREgm+BCsnZhXVTm1C45jX+6dWFMXf6K0ABrMI6E7/VGF+FxDefBNBy4wEDnFo22q+219aOCHze+XRBALHww1BE0gZMoD3lCJHt5NR2LiiACb+qOM69O7gUe+H4aCfQE2gzFU2r7YkXxjh9rAC2oq0VWwwACHo1x+6YvEBW7V2WBbFQA3afw7q3qcMHjfxsGsm2n3Qbv0HFgTW+K64GREgHD2BsWxHVfWTHxQlW51e/EMbyvyapv05ii6LC2/VRDGryxQzmjr7mLi3mzSPnM9r+ED5nlCXk8QdAv3l/F7p5yEoJnT7l5/w6YV+ngAAAAACJaN7PwkW+fMC9rgWnoAdmkPVoSrO6E4cXh1e1mvslhYY6ic2h2ykKfj2wxoFUAX8Ve8XaHCJd+/jm1GbI0j0gwIXMZTcGtccpW4fzs8by56ANcz0eduR9Y4ZK6RhoPTvocUdpVZLf9r5IyKvIKaCqdFlMVMfYm2G71XbFGO0mQm6S7xu30V2diNjUfjfPJjm8bKfe2zWZ3t6bGD+FQuUK+5TkRsoUXwH2FfbnFL6x67nbcwvoCcYS9Ah+PdpuUbnApzZ2iuTwPPcILAcMKR/J3DPFiT8R6GJ/ghS8ED4C9l9Amu8UeM/+80itbX1Xp8juXLrXbawerhoUSnFV7YHJUI/ND2dxrkRVWQo/wRQ8kdsxsN4oPx5uifmN0B8SnvWPQpMdJ/ytQJPAaBQtcY7tfRJm7XVa/nEGrAQGucQvzB3FSRrMcitnmv6SJwJRUK4Q9Qlo208cihC/gi598HEvm33aTe2e5KtAkoNWXOP1M2Tn3+VjvvVV24CSjoDazYc0qWcOdwtzC24ufT4E6Rl4lshhcqAhHqbwXiDqDGv72/L3kbVeAIzcwew0VwdNVVwbHSpCOXYQCxDb6ReJWmB6/tIr6AxnBJecb+h5+8HwNy1DuoTMrF251kwO//y1RlZwTJK2/U9F9mrHjSnjGJ2ORRMbN+MnbxFCtVjm9zH8C8qHCJkmEKF2mqXANLCJ+EMyyAV5m9OxFS63kSuT5guEjTko8rr0LUUr71wrwBNWie8Fo5nA30aELV/4NKGvM+qymePeOd29ABrvK0MAfyZDY0g6VdcFerfG4FkhwFxmA2V+OSFNdf+hZ3UAd9H2sQawRvVQSHZI+77E66ODx/iYGwe7znHNywof+TEDMKt0Lcap9NuNPFYrXpEMuQhj5LjKXkHWmuCsPjPuNs20mqbB60+/+wE9qbVRKoR5agjwEg5vFbP3gk+cpQk11VWOUOKwbSj1jQjKx12UYiyoBphxteE6HjpfOVSVyrBgD/dd+Pufuf8ax9SG7DwyELSA5VQCoe3wYw1RffoxRUltnIG4bqYoAVus+3LgHBqassshDhycoG02Zo/7ksLHgfgf6FRCnuLvI0Ul3yFiWgrAtD/L0wkqfXmpiucxOCWQlnz0+ZJgOO4Qiuefx/tF6D+lo4PeOh2sW/+FA0np00gt+GzceNMc0Q1H+C9q8ZTbCulaalKX1820HYF1QV2R72Hw3cRYOSkSKo4XH/b3SI7oG8ouRn7TKXlAJQwtlmsQPPyWUqUTNfp+r8SweewyH0+tMyMsyUKvlyWFkNVAIU9RJfOhX4l5Tb7SGLegVA0E7e8h/sKdYB3XJTGGBZc/AAyf4T8ei0sIPjaNrUKdpMbjUM9H32XXNPImbdmGiPpqWeO5QIhDvHwLojCWGAd3QdjnVHz/nZSXb29BARTIERWhYHutZjGqOPnokAk/JWOs/+mOK42G0zT1FnrC6bs9CIdmiPmW0/7bztEqOIxx8xyK89pj/Ypi+Dn1iaF/9ljNXfB+ISZopAF8cwikQwxAPSqln5VkzcpwxhGk+a6RM13UMJakoN0A2NXVnr1Fz24byAW+fQgdjS5LUI9DNbKVLTK1CJSS4wuuoOZTqmaz0CH0nzfrSiG9aKA6gnRrv/Pznb4e+FGi7SDGZPLK9+N8FVIUgcXT8+znth5Y8E/4d6V6SBPnM2X1tztlWCvslMmp7P16rE4Nctior+qY6QtfYtzkl9794bC2trk/QbfGdjt/G1ZS5fJUC1vlzg6zTALSYjCB4sOQO/XuKeRw9AUCQQtCCOjbwsIvw8DUpx6UPJOzsM2GGujVV3Jqwz3PxaLH6EyebAaQx+dVHCC09ZtuBRY6i0X9SJI4gfIv8OpaNoqxvYu275myeMshi/6N6zoEXP8NKWmfjKszTFNgRW82HTOKlKFOjvEuCtpG+L+qS4rVfIc0GhuFBgHAv6SbfWxlKDOsNESYObwppDMPF94lYGrzKLBCIYxaGhvl12xH4JqlufbVRo4cppgSZ1Zew7tiElTnnm10h9na2iw3k0Edolhbo9UNkvag3W+UQlSh8eQQJBfys7X7x6yhdst0uMDLG0EqX/+/k//vs//9+UA3VhkR7oLXIJXq+BwRmUxSMgAAAAAAAA" alt="Created By The Spectrum Tech Engine">
       <div class="seal" aria-hidden="true">❦</div>
     </div>
@@ -361,16 +368,18 @@ const ste = (f, ...a) => { try { if (window.STE && window.STE[f]) window.STE[f](
 function countShoot(opp) {
   ste('track', 'play');
   ste('detail', 'vs-' + opp); ste('detail', 'grounds-' + cfg.terrain); ste('detail', 'season-' + cfg.setting); ste('detail', 'targets-' + cfg.look);
-  ste('detail', skeet() ? 'skeet-round' : (cfg.mode === 'live' ? 'open-shoot' : 'taking-turns'));
-  if (!skeet()) ste('detail', 'first-to-' + cfg.round);
+  ste('detail', 'difficulty-' + cfg.diff);
+  ste('detail', skeet() ? 'skeet-round' : cfg.mode === 'sfs' ? 'shot-for-shot-' + cfg.sfChal : (cfg.mode === 'live' ? 'open-shoot' : 'taking-turns'));
+  if (!skeet() && cfg.mode !== 'sfs') ste('detail', 'first-to-' + cfg.round);
 }
 /* ---------------- config / state ---------------- */
-const cfg = { mode: 'turn', round: 25, look: 'clay', n: 2, terrain: 'lawn', setting: 'summer', opp: 'local', gun: ['light', 'light'] };
+const cfg = { mode: 'turn', round: 25, look: 'clay', diff: 'normal', terrain: 'lawn', setting: 'summer', opp: 'local', gun: ['light', 'light'], sfN: 20, sfSwap: 1, sfPair: 1, sfChal: 'acc' };
 const skeet = () => cfg.round === 'skeet';
+const sfs = () => cfg.mode === 'sfs' && !skeet();
 let role = 'local';            // local | host | guest | spec
 const authority = () => role === 'local' || role === 'host';
 let state = 'menu', seed = 1, gameT = 0;
-let players = [], shots = [], volleys = [], parts = [], texts = [], obstacles = [], targets = [];
+let players = [], shots = [], volleys = [], parts = [], texts = [], targets = [];
 let wind = 0, windShown = 0, turn = 0, time = 0, shake = 0, koT = 0, winner = 0, matchNo = 0, introT = 0, liveWindT = 0;
 let banner = null, builtKey = '';
 let level = 1, levelKills = 0, spawnT = 0, tSeq = 0, goldT = 0, goldCool = 0;
@@ -378,6 +387,8 @@ let level = 1, levelKills = 0, spawnT = 0, tSeq = 0, goldT = 0, goldCool = 0;
 const PHASES = ['ready', 'pull', 'fly', 'after'];
 let phase = 'ready', phaseT = 0, pres = null;
 const wins = [0, 0], keys = {}, scores = [0, 0], broken = [0, 0], fired = [0, 0];
+const tSum = [0, 0], tN = [0, 0];   // seconds from each broken clay leaving the trap to breaking, and how many: the "speed of shot"
+const avgT = i => tN[i] ? (tSum[i] / tN[i]).toFixed(2) + ' s' : 'none yet';
 // this round's feats, for each shooter's career: golden clays, longest run of breaks, doubles taken, two with one shot
 const newFeats = () => ({ gold: 0, run: 0, cur: 0, brace: 0, two: 0 });
 let feats = [newFeats(), newFeats()];
@@ -392,65 +403,83 @@ const TT = {
   std:    { pts: 2,  r: 24 },
   lob:    { pts: 1,  r: 25 },
   swift:  { pts: 3,  r: 19 },
+  zip:    { pts: 4,  r: 19 },
   mini:   { pts: 5,  r: 14 },
   rabbit: { pts: 5,  r: 22 },
   teal:   { pts: 8,  r: 20 },
   gold:   { pts: 20, r: 23 },
 };
 const TKEYS = Object.keys(TT);
-const CLAY_NAME = { std: 'clay', lob: 'lob', swift: 'swift', mini: 'mini', rabbit: 'rabbit', teal: 'teal', gold: 'golden clay' };
-const GLASS_NAME = { std: 'glass ball', lob: 'lob', swift: 'swift ball', mini: 'little ball', rabbit: 'rolling ball', teal: 'springing ball', gold: 'golden ball' };
+const CLAY_NAME = { std: 'clay', lob: 'lob', swift: 'swift', zip: 'zip', mini: 'mini', rabbit: 'rabbit', teal: 'teal', gold: 'golden clay' };
+const GLASS_NAME = { std: 'glass ball', lob: 'lob', swift: 'swift ball', zip: 'darting ball', mini: 'little ball', rabbit: 'rolling ball', teal: 'springing ball', gold: 'golden ball' };
 const tName = b => (b.look === 'glass' ? GLASS_NAME : CLAY_NAME)[b.t];
-const GLASS_COL = { std: '#5fa8a0', lob: '#cfe0e6', swift: '#d89a3a', mini: '#b8283a', rabbit: '#4a7ac0', teal: '#8a5ab8', gold: '#f2c64a' };
-function levelPool(l) { const p = [['std', 5]]; if (l >= 2) p.push(['lob', 2.5], ['swift', 2.5]); if (l >= 3) p.push(['rabbit', 1.6], ['mini', 1.4]); if (l >= 4) p.push(['teal', 1.2]); return p; }
+const GLASS_COL = { std: '#5fa8a0', lob: '#cfe0e6', swift: '#d89a3a', zip: '#2a8a6a', mini: '#b8283a', rabbit: '#4a7ac0', teal: '#8a5ab8', gold: '#f2c64a' };
+// how much gravity pulls each kind (a lob floats, a zip barely drops)
+const TG = { lob: .85, zip: .35, gold: 0 };
+function levelPool(l) { const p = [['std', 5]]; if (l >= 2) p.push(['lob', 2.5], ['swift', 2.5], ['zip', 1.8]); if (l >= 3) p.push(['rabbit', 1.6], ['mini', 1.4]); if (l >= 4) p.push(['teal', 1.2]); return p; }
 const maxT = l => l <= 1 ? 1 : l <= 3 ? 2 : l <= 5 ? 3 : 4;
 const levelNeed = l => l <= 1 ? 5 : 5 + l;
-const spdMul = l => Math.min(1.45, 1 + .06 * (l - 1));
+// the difficulty sets how fast clays fly at level I (a quarter, a half or all of full speed); every level, or skeet station, adds 10%
+const DIFF = { easy: .25, normal: .5, hard: 1 };
+const speedAt = lv => Math.min(3, (DIFF[cfg.diff] || .5) * Math.pow(1.1, Math.max(0, lv - 1)));
 const goldWord = () => cfg.look === 'glass' ? 'golden ball' : 'golden clay';
-const LEVEL_TEXT = { 2: () => 'Lobs, swifts, and perhaps a ' + goldWord(), 3: () => 'Rabbits roll and minis fly', 4: () => 'Beware the springing teal' };
-function pickType() {
-  const opts = levelPool(level); let tot = 0; for (const [, w] of opts) tot += w;
-  let r = Math.random() * tot; for (const [k, w] of opts) if ((r -= w) <= 0) return k; return 'std';
-}
+const LEVEL_TEXT = { 2: () => 'Lobs, swifts, zips, and perhaps a ' + goldWord(), 3: () => 'Rabbits roll and minis fly', 4: () => 'Beware the springing teal' };
+function pickFrom(opts) { let tot = 0; for (const [, w] of opts) tot += w; let r = Math.random() * tot; for (const [k, w] of opts) if ((r -= w) <= 0) return k; return opts[0][0]; }
+const pickType = (lv = level) => pickFrom(levelPool(lv));
 const pickLook = () => cfg.look === 'mix' ? (Math.random() < .5 ? 'clay' : 'glass') : cfg.look;
+// every shooter gets as many clays from the left as from the right, shuffled so nobody can predict the next one
+let bags = [[], []];
+function drawSide(who) {
+  const b = bags[who] || (bags[who] = []);
+  if (!b.length) {
+    for (let i = 0; i < 10; i++) b.push(i % 2 ? 'H' : 'L');
+    for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; }
+  }
+  return b.pop();
+}
 
 // the high house (left, tall) and the low house (right, short) throw clays across each other
 // the trap houses stand just inside the two shooters, who are right at the screen edges
 const HHX = 255, LHX = () => W - 255;
 const hh = () => ({ x: HHX + 66, y: GB - 316 });
 const lh = () => ({ x: LHX() - 70, y: GB - 62 });
-function launch(t, from, exact) {
-  const m = skeet() ? 1 : spdMul(level), k = W / 2000, v = exact ? 0 : 1;
-  const b = { id: ++tSeq, t, look: pickLook(), x: 0, y: 0, vx: 0, vy: 0, g: GC, spin: rand(0, 6), age: 0, seen: false, from: from || '' };
-  const side = Math.random() < .5;
-  if (t === 'std' || t === 'swift' || t === 'mini' || (t === 'gold' && exact)) {
-    const s = (t === 'swift' ? 1.22 : t === 'mini' ? 1.3 : t === 'gold' ? 1.15 : 1) * m;
-    const L = from || (side ? 'H' : 'L'); b.from = L;
-    if (L === 'H') { const p = hh(); b.x = p.x; b.y = p.y; b.vx = 1000 * s * k * (1 + v * rand(-.06, .06)); b.vy = (-400 + v * rand(-90, 90)) * (.9 + .1 * s) * Z; }
-    else { const p = lh(); b.x = p.x; b.y = p.y; b.vx = -1000 * s * k * (1 + v * rand(-.06, .06)); b.vy = (-640 + v * rand(-90, 60)) * (.9 + .1 * s) * Z; }
-  } else if (t === 'lob') {
-    b.x = side ? -30 : W + 30; b.y = GB - 30; b.vx = (side ? 1 : -1) * rand(560, 720) * m * k; b.vy = -rand(720, 800) * Z; b.g = GC * 1.15;
+// Launch a target from 'H' (the left, by the high house) or 'L' (the right, by the low house) at speed sm (1 = full speed).
+// A slower clay flies the very same path, only more slowly: its speeds scale by sm and gravity by sm squared.
+function launch(t, from, sm) {
+  const k = W / 2000, L = from === 'L' ? 'L' : 'H', dir = L === 'H' ? 1 : -1;
+  const b = { id: ++tSeq, t, look: pickLook(), x: 0, y: 0, vx: 0, vy: 0, g: GC * (TG[t] === undefined ? 1 : TG[t]), spin: rand(0, 6), age: 0, seen: false, from: L, sm };
+  if (t === 'std' || t === 'swift' || t === 'mini' || t === 'zip') {
+    const s = t === 'swift' ? 1.22 : t === 'mini' ? 1.3 : t === 'zip' ? 1.6 : 1, p = L === 'H' ? hh() : lh();
+    b.x = p.x; b.y = p.y; b.vx = dir * 1000 * s * k * rand(.94, 1.06);
+    if (t === 'zip') b.vy = (L === 'H' ? -rand(90, 150) : -rand(300, 350)) * Z; // darts across almost flat
+    else b.vy = (L === 'H' ? -400 + rand(-90, 90) : -640 + rand(-90, 60)) * (.9 + .1 * s) * Z;
+  } else if (t === 'lob') { // floats up high and slow
+    b.x = L === 'H' ? -30 : W + 30; b.y = GB - 30; b.vx = dir * rand(460, 600) * k; b.vy = -rand(690, 740) * Z;
   } else if (t === 'rabbit') {
-    b.x = side ? -30 : W + 30; b.y = GB - TT.rabbit.r; b.vx = (side ? 1 : -1) * rand(560, 700) * m * k; b.hopT = rand(.2, .6);
-  } else if (t === 'teal') {
+    b.x = L === 'H' ? -30 : W + 30; b.y = GB - TT.rabbit.r; b.vx = dir * rand(560, 700) * k; b.hopT = rand(.2, .6);
+  } else if (t === 'teal') { // springs straight up from a pit in the middle
     b.x = rand(W * .38, W * .62); b.y = GB + 5; b.vx = rand(-140, 140) * Z; b.vy = -rand(770, 830) * Z;
-  } else if (t === 'gold') { // the wild card: starts well off one side and darts straight across, very fast
-    b.x = side ? -520 : W + 520; b.y = GB - rand(480, 730) * Z; b.vx = (side ? 1 : -1) * 1500 * k * (1 + .05 * Math.max(0, level - 2)); b.vy = rand(-40, 40); b.g = 0;
+  } else if (t === 'gold') { // the wild card: starts well off one side and darts straight across
+    b.x = L === 'H' ? -520 : W + 520; b.y = GB - rand(480, 730) * Z; b.vx = dir * 1500 * k; b.vy = rand(-40, 40);
+    sm = b.sm = Math.max(sm, .6); // even on easy the golden one is quick
   }
+  b.vx *= sm; b.vy *= sm; b.g *= sm * sm;
+  if (b.hopT) b.hopT /= sm;
   return b;
 }
 // moves a target on; returns 'land' (fell to earth unbroken), 'away' (left the field) or nothing
 function stepTarget(b, dt) {
+  const sm = b.sm || 1;
   b.age += dt; b.spin += dt * (b.t === 'rabbit' ? b.vx / TT.rabbit.r : 12);
-  if (b.t !== 'gold') { b.vx += wind * .5 * Z * dt; b.vx *= 1 - .08 * dt; }
+  if (b.t !== 'gold') { b.vx += wind * .5 * Z * sm * sm * dt; b.vx *= 1 - .08 * sm * dt; }
   b.vy += b.g * dt; b.x += b.vx * dt; b.y += b.vy * dt;
   if (b.t === 'rabbit') {
     const gy = GB - TT.rabbit.r;
-    if (b.y >= gy) { b.y = gy; b.vy = 0; b.hopT -= dt; if (b.hopT <= 0) { b.vy = -rand(150, 330) * Z; b.hopT = rand(.25, .8); } }
+    if (b.y >= gy) { b.y = gy; b.vy = 0; b.hopT -= dt; if (b.hopT <= 0) { b.vy = -rand(150, 330) * Z * sm; b.hopT = rand(.25, .8) / sm; } }
   } else if (b.y > GB - 4 && b.vy > 0) return 'land';
   if (b.x > 0 && b.x < W) b.seen = true;
-  if ((b.seen || b.age > 1.5) && (b.x < -80 || b.x > W + 80)) return 'away';
-  if (b.age > 9) return 'away';
+  if ((b.seen || b.age > 1.5 / sm) && (b.x < -80 || b.x > W + 80)) return 'away';
+  if (b.age > 9 / sm) return 'away';
   return null;
 }
 
@@ -474,67 +503,9 @@ const gunOk = g => GUN[g] ? g : 'light';
 function gunNotes() { for (const i of [0, 1]) $('#gun' + (i + 1) + 'Note').textContent = GUN[cfg.gun[i]].note; }
 const GUN_LEN = 92;
 
-/* ---------------- obstacles: trees and garden ornaments that stop the shot ---------------- */
 function stationX(st) { if (st === 8) return Math.round(W / 2); const a = 380, b = W - 380; return Math.round(a + (b - a) * (st - 1) / 6); }
-// the shooters stand as far apart as the field allows, just inside the trap houses
+// the shooters stand right at the screen edges; on your own you start near the middle and may walk anywhere
 const homeX = id => solo() ? Math.round(CX - 200) : id ? W - 95 : 95;
-function obsParts(o) {
-  const cx = o.x, h = o.h, w = o.w;
-  if (o.kind === 'oak') return [{ r: [cx - 15, GB - h * .55, 30, h * .55] }, { c: [cx, GB - h * .7, w * .42] }, { c: [cx - w * .3, GB - h * .55, w * .3] }, { c: [cx + w * .3, GB - h * .55, w * .3] }];
-  if (o.kind === 'statue') return [{ r: [cx - w / 2, GB - h * .34, w, h * .34] }, { r: [cx - w * .22, GB - h, w * .44, h * .66] }];
-  if (o.kind === 'topiary') return [{ r: [cx - w * .3, GB - 46, w * .6, 46] }, { c: [cx, GB - 46 - w * .42, w * .42] }, { c: [cx, GB - 46 - w * .84 - w * .28, w * .3] }];
-  return [{ r: [cx - w / 2, GB - h, w, h] }]; // a ruined column
-}
-function obsHit(o, x, y) {
-  for (const q of o.parts) {
-    if (q.r) { if (x > q.r[0] && x < q.r[0] + q.r[2] && y > q.r[1] && y < q.r[1] + q.r[3]) return true; }
-    else if (Math.hypot(x - q.c[0], y - q.c[1]) < q.c[2]) return true;
-  }
-  return false;
-}
-// Obstacles are a mirror image: each one on the left has a twin the same distance in from the right,
-// so neither shooter is worse off. An odd one out stands in the middle.
-function obsSize(kind, R) {
-  const w = kind === 'oak' ? 150 + R() * 60 : kind === 'statue' ? 60 + R() * 20 : kind === 'topiary' ? 80 + R() * 30 : 50 + R() * 16;
-  const h = kind === 'oak' ? 330 + R() * 150 : kind === 'statue' ? (skeet() ? 190 + R() * 25 : 210 + R() * 70) : kind === 'topiary' ? 200 : 300 + R() * 120;
-  return { w: Math.round(w), h: Math.round(h) };
-}
-function genObstacles(n, sd) {
-  const R = seeded(sd * 7919 + n * 131 + 17), left = [];
-  // stay well clear of where the shooters stand (and of the skeet stations, which are mirrored too)
-  const keep = skeet() ? [1, 2, 3].map(stationX) : solo() ? [homeX(0), W - homeX(0)] : [homeX(0)], gap = skeet() ? 70 : 260;
-  const pairs = Math.floor(n / 2);
-  let tries = 0;
-  while (left.length < pairs && tries < 800) {
-    tries++;
-    // if the big ones won't fit, try slimmer ones
-    // skeet stations are close together, so only the low garden pieces stand among them
-    const r = R(), kind = skeet() ? (r < .55 ? 'topiary' : 'statue') : tries > 400 ? (r < .5 ? 'statue' : 'column') : r < .38 ? 'oak' : r < .62 ? 'statue' : r < .82 ? 'topiary' : 'column', { w, h } = obsSize(kind, R);
-    const x = Math.round(W * .12 + R() * (CX - 140 - W * .12));
-    if (x + w / 2 > CX - 90) continue; // its twin must not touch it
-    const squeeze = tries > 600; // a last resort: a little closer together
-    if (keep.some(k => Math.abs(k - x) < w / 2 + (squeeze ? gap - 70 : gap))) continue;
-    if (left.some(o => Math.abs(o.x - x) < (o.w + w) / 2 + (squeeze ? 15 : 40))) continue;
-    left.push({ kind, x, w, h });
-  }
-  const out = [];
-  for (const o of left) out.push(o, { ...o, x: W - o.x });
-  if (n % 2 && solo() && !skeet()) {
-    // on your own there's nobody to be fair to, so the odd one out goes anywhere clear of you
-    for (let t = 0; t < 300; t++) {
-      const r = R(), kind = r < .4 ? 'oak' : r < .7 ? 'statue' : 'column', sz = obsSize(kind, R), x = Math.round(W * .12 + R() * W * .76);
-      if (Math.abs(x - homeX(0)) < sz.w / 2 + 260 || out.some(o => Math.abs(o.x - x) < (o.w + sz.w) / 2 + 40)) continue;
-      out.push({ kind, x, w: sz.w, h: sz.h }); break;
-    }
-  }
-  if (n % 2 && !(solo() && !skeet())) {
-    // in skeet, the middle is station IV and VIII, so the odd one out there is a low hedge
-    const kind = skeet() ? 'topiary' : ['oak', 'statue', 'column'][Math.floor(R() * 3)], sz = obsSize(kind, R);
-    out.push({ kind, x: Math.round(CX), w: sz.w, h: sz.h });
-  }
-  for (const o of out) o.parts = obsParts(o);
-  return out;
-}
 
 // Same-screen and computer games stretch the field to the whole screen width, so the houses and shooters sit at its edges;
 // online games keep one standard field (shaped like most phones) so both players see the same thing.
@@ -544,7 +515,6 @@ function setField() {
 }
 function buildLevel() {
   setField();
-  obstacles = genObstacles(cfg.n, seed);
   const key = cfg.terrain + cfg.setting + W;
   if (key !== builtKey) { builtKey = key; buildBackdrop(); }
   initWeather();
@@ -676,7 +646,8 @@ const restAim = p => p.facing > 0 ? .95 : Math.PI - .95;   // gun pointed safely
 const upAim = p => Math.atan2(-430, CX - p.x);               // gun up towards the middle of the sky
 function mkPlayer(id) {
   const home = homeX(id);
-  const p = { id, S: STYLE[id], home, x: home, tx: null, facing: id ? -1 : 1, minX: home - 45, maxX: home + 45,
+  const free = solo();   // on your own you may walk the whole ground
+  const p = { id, S: STYLE[id], home, x: home, tx: null, facing: id ? -1 : 1, minX: free ? 60 : home - 45, maxX: free ? W - 60 : home + 45,
     aim: 0, shells: 2, reloadT: 0, cool: 0, kick: 0, recoil: 0, walk: 0, pullT: 0, hold: null, gun: cfg.gun[id] || 'light' };
   p.aim = upAim(p); return p;
 }
@@ -692,28 +663,95 @@ function canFire(p) {
   if (state !== 'play' || introT > 0 || !p || p.cool > 0 || p.shells <= 0) return false;
   return cfg.mode === 'live' && !skeet() ? p.reloadT <= 0 : (turn === p.id && phase === 'fly');
 }
-const canMove = p => !skeet() && state === 'play' && introT <= 0 && (cfg.mode === 'live' || turn === p.id);
+const canMove = p => !skeet() && state === 'play' && introT <= 0 && (solo() || cfg.mode === 'live' || turn === p.id);
 
 /* ---------------- match flow (authority) ---------------- */
 const SK_ST = [null, ['H', 'L', 'D'], ['H', 'L', 'D'], ['H', 'L'], ['H', 'L'], ['H', 'L'], ['H', 'L', 'D'], ['H', 'L', 'D'], ['H', 'L']];
+const SK_TYPES = [['std', 4], ['swift', 2], ['zip', 1.5], ['mini', 1], ['lob', 1.5], ['rabbit', .8]];
 function buildSkeet(first) {
   const q = [], who2 = solo() ? [first] : [first, 1 - first];
   // half the time, one clay of the round (the same one for both shooters) is golden
   const singles = []; for (let st = 1; st <= 8; st++) SK_ST[st].forEach((k, j) => { if (k !== 'D') singles.push([st, j]); });
   const g = Math.random() < .5 ? pick(singles) : null;
-  for (let st = 1; st <= 8; st++) for (const who of who2) SK_ST[st].forEach((k, j) => q.push({ who, st, ts: k === 'D' ? ['H', 'L'] : [k], gold: !!(g && g[0] === st && g[1] === j) }));
+  for (let st = 1; st <= 8; st++) {
+    // each station's kinds of clay are picked once, so both shooters face exactly the same
+    const set = SK_ST[st].map((k, j) => { const ts = k === 'D' ? ['H', 'L'] : [k]; return { ts, types: ts.map(() => pickFrom(SK_TYPES)), gold: !!(g && g[0] === st && g[1] === j) }; });
+    for (const who of who2) for (const s of set) q.push({ who, st, ts: s.ts, types: s.types, gold: s.gold });
+  }
   return { q, i: 0, first, who2, firstMiss: [null, null], opt: 0, so: 0, done: [0, 0] };
+}
+/* ---- shot for shot: the opponent pulls; the same kinds of clay in the same order for both shooters ---- */
+let SF = null;                                   // authority only
+let sfInfo = { done: [0, 0], n: 20, pull: 0 };   // what the scoreboard shows, and whether a pull is allowed right now
+const SF_GAP = 1.5, SF_AUTO = 5, SF_MISS = 3;    // seconds between pulls, before a clay releases itself, and a miss in the speed challenge
+function buildSF() {
+  const n = cfg.sfN, types = [];
+  // speed rises 10% every 5 clays, for both shooters alike
+  for (let i = 0; i < n; i++) { const lv = 1 + Math.floor(i / 5); types.push(lv >= 2 && Math.random() < .04 ? 'gold' : pickType(lv)); }
+  return { n, types, done: [0, 0], since: 0, pulled: 0, cpuAt: rand(.4, 2.2) };
+}
+const computerPulls = () => solo() || (cpuOn() && turn === 0);
+// the human who pulls for the shooter, if there is one
+function puller() { return cfg.mode === 'sfs' && !skeet() && players.length === 2 && !computerPulls() ? players[1 - turn] : null; }
+function sfPullOpen() {
+  if (!SF || state !== 'play' || introT > 0 || SF.done[turn] >= SF.n) return false;
+  if (phase === 'ready') return phaseT >= SF_GAP;
+  return phase === 'fly' && cfg.sfPair === 2 && SF.pulled === 1; // the second clay of a pair may follow straight away
+}
+const canPull = pid => { const pu = puller(); return !!pu && pu.id === pid && sfPullOpen(); };
+function sfPull() {
+  const p = players[turn], i = SF.done[turn], t = SF.types[i], lv = 1 + Math.floor(i / 5);
+  if (phase === 'ready') { pres = { who: turn, specs: [], n: 0, broken: 0, hit: [], q: null }; p.shells = 2; p.cool = 0; p.aim = upAim(p); SF.pulled = 0; }
+  const side = drawSide(turn), b = launch(t, side, speedAt(lv));
+  b.si = pres.specs.length; pres.specs.push({ t, from: side }); pres.n++;
+  targets.push(b); SF.done[turn]++; SF.pulled++;
+  phase = 'fly'; phaseT = 0; SF.cpuAt = rand(.3, 1.2);
+  const pu = puller();
+  emitFx({ k: 'pull', p: pu ? pu.id : turn });
+  if (t === 'gold') emitFx({ k: 'gold' });
+}
+function updateSF(dt) {
+  if (!SF || state !== 'play' || introT > 0) return;
+  phaseT += dt;
+  if (sfPullOpen()) {
+    const waited = phase === 'ready' ? phaseT - SF_GAP : phaseT;
+    // the computer pulls at a moment of its own choosing; nobody may hold a clay back for long
+    if ((computerPulls() && waited >= SF.cpuAt) || waited >= (phase === 'ready' ? SF_AUTO : SF_GAP)) sfPull();
+  }
+  const waitingForSecond = cfg.sfPair === 2 && SF.pulled === 1 && SF.done[turn] < SF.n;
+  if (phase === 'fly' && !targets.length && !shots.length && phaseT > .3 && !waitingForSecond) { endPresentation(); phase = 'after'; phaseT = 0; }
+  else if (phase === 'after' && phaseT >= .6) sfNext();
+}
+function sfNext() {
+  SF.since += SF.pulled; SF.pulled = 0;
+  const left = i => SF.done[i] < SF.n, other = 1 - turn;
+  if (!left(turn) && (solo() || !left(other))) { sfFinish(); return; }
+  if (!solo() && (SF.since >= cfg.sfSwap || !left(turn)) && left(other)) { turn = other; SF.since = 0; showBanner(NAMES[turn].full + ' to shoot', .9); }
+  restPoses(); phase = 'ready'; phaseT = 0; pres = null; SF.cpuAt = rand(.4, 2.2);
+  if (cpuOn() && turn === 1) cpuS.wait = rand(.3, .5);
+}
+// the speed challenge: average seconds a clay, where a missed clay counts as SF_MISS seconds
+const sfSpeed = i => { const n = cfg.sfN; return (tSum[i] + SF_MISS * Math.max(0, n - broken[i])) / n; };
+function sfFinish() {
+  if (solo()) { finishSolo(); return; }
+  let w;
+  if (cfg.sfChal === 'speed') { const a = sfSpeed(0), b = sfSpeed(1); w = a !== b ? (a < b ? 0 : 1) : broken[0] >= broken[1] ? 0 : 1; }
+  else w = broken[0] !== broken[1] ? (broken[0] > broken[1] ? 0 : 1) : fired[0] !== fired[1] ? (fired[0] < fired[1] ? 0 : 1) : (sfSpeed(0) <= sfSpeed(1) ? 0 : 1);
+  winShoot(w);
 }
 function startMatch() {
   seed = Math.floor(Math.random() * 1e6) + 1;
   buildLevel();
   players = solo() ? [mkPlayer(0)] : [mkPlayer(0), mkPlayer(1)];
   if (cpuOn()) players[1].gun = pick(['choke', 'light', 'improved', 'heavy']);
-  shots = []; volleys = []; parts = []; texts = []; targets = [];
-  scores[0] = scores[1] = 0; broken[0] = broken[1] = 0; fired[0] = fired[1] = 0; level = 1; levelKills = 0; spawnT = 2.4;
+  shots = []; volleys = []; parts = []; texts = []; targets = []; bags = [[], []];
+  scores[0] = scores[1] = 0; broken[0] = broken[1] = 0; fired[0] = fired[1] = 0; tSum[0] = tSum[1] = 0; tN[0] = tN[1] = 0;
+  level = 1; levelKills = 0; spawnT = 2.4;
   feats = [newFeats(), newFeats()]; goldT = rand(45, 90); goldCool = 4;
   turn = solo() ? 0 : matchNo % 2; phase = 'ready'; phaseT = 0; pres = null;
   SK = skeet() ? buildSkeet(turn) : null;
+  SF = sfs() ? buildSF() : null;
+  if (SF) sfInfo = { done: [0, 0], n: SF.n, pull: 0 };
   if (SK) { skInfo = { st: 1, lab: '', done: [0, 0] }; placeSquad(); players.forEach(p => { p.x = p.tx; }); }
   restPoses();
   wind = rand(-80, 80); liveWindT = 6; gameT = 0;
@@ -721,7 +759,8 @@ function startMatch() {
   Object.assign(cpuS, { wait: 1.4, tx: homeX(1), dodgeT: 2 });
   emitFx({ k: 'bell' });
   countShoot(role === 'host' ? 'online' : cfg.opp === 'cpu' ? 'computer' : solo() ? 'solo' : 'same-screen');
-  showBanner('The shoot begins', 1.2, () => showBanner(SK ? 'Station I: ' + NAMES[turn].full : cfg.mode === 'live' || solo() ? 'Level I: a single clay' : NAMES[turn].full + ' to shoot', 1.3));
+  const next = SK ? 'Station I: ' + NAMES[turn].full : SF ? 'Shot for shot: ' + NAMES[turn].full + ' to shoot' : cfg.mode === 'live' || solo() ? 'Level I: a single clay' : NAMES[turn].full + ' to shoot';
+  showBanner('The shoot begins', 1.2, () => showBanner(next, 1.3));
   say('start', turn, true);
   hidePanels(); $('#hudBtns').hidden = false; updateNetTag();
 }
@@ -740,15 +779,14 @@ function placeSquad() {
 }
 function startPresentation() {
   const p = players[turn]; let specs;
-  if (SK) { const q = SK.q[SK.i]; specs = q.ts.map(h => ({ t: q.gold ? 'gold' : 'std', from: h })); p.shells = specs.length; }
+  if (SK) { const q = SK.q[SK.i]; specs = q.ts.map((h, i) => ({ t: q.gold ? 'gold' : q.types[i], from: h })); p.shells = specs.length; }
   else {
     goldCool--;
-    if (level >= 2 && goldCool <= 0 && Math.random() < .09) { specs = [{ t: 'gold' }]; goldCool = 6; }
+    if (level >= 2 && goldCool <= 0 && Math.random() < .09) { specs = [{ t: 'gold', from: drawSide(turn) }]; goldCool = 6; }
     else {
+      // a double may come from one side or both: each clay takes its own side from the shooter's fair shuffle
       const n = level <= 1 ? 1 : level === 2 ? (Math.random() < .4 ? 2 : 1) : (Math.random() < .7 ? 2 : 1);
-      specs = Array.from({ length: n }, () => ({ t: pickType() }));
-      // a pair of house clays always comes one from each house, as a true double
-      if (n === 2 && specs.every(s => s.t === 'std' || s.t === 'swift' || s.t === 'mini')) { specs[0].from = 'H'; specs[1].from = 'L'; }
+      specs = Array.from({ length: n }, () => ({ t: pickType(), from: drawSide(turn) }));
     }
     p.shells = 2;
   }
@@ -758,8 +796,11 @@ function startPresentation() {
   emitFx({ k: 'pull', p: turn });
 }
 function launchPresentation() {
+  const sm = speedAt(SK ? pres.q.st : level);
   pres.specs.forEach((s, i) => {
-    const b = launch(s.t, s.from, !!SK); b.si = i; targets.push(b);
+    // a skeet golden clay flies the house path, just golden
+    const b = launch(SK && s.t === 'gold' ? 'std' : s.t, s.from, sm); if (SK && s.t === 'gold') b.t = 'gold';
+    b.si = i; targets.push(b);
     if (s.t === 'gold' && !SK) emitFx({ k: 'gold' });
   });
   if (SK) SK.done[pres.who] += pres.q.so ? 0 : pres.n;
@@ -775,7 +816,8 @@ function endPresentation() {
   }
   // skeet: the first clay a shooter misses is the one they shoot again as their option (the 25th)
   if (SK && p.broken < p.n && !SK.firstMiss[who] && !p.q.opt && !p.q.so) {
-    const m = p.specs.find((s, i) => !p.hit.includes(i)); SK.firstMiss[who] = { st: p.q.st, from: m ? m.from : 'L' };
+    const m = p.specs.find((s, i) => !p.hit.includes(i));
+    SK.firstMiss[who] = { st: p.q.st, from: m ? m.from : 'L', t: m && m.t !== 'gold' ? m.t : 'std' };
   }
 }
 function nextTurn() {
@@ -783,9 +825,9 @@ function nextTurn() {
   if (SK) {
     const prev = SK.q[SK.i]; SK.i++;
     if (SK.i >= SK.q.length) {
-      if (!SK.opt) { SK.opt = 1; for (const who of SK.who2) { const m = SK.firstMiss[who] || { st: 8, from: 'L' }; SK.q.push({ who, st: m.st, ts: [m.from], opt: 1 }); } }
+      if (!SK.opt) { SK.opt = 1; for (const who of SK.who2) { const m = SK.firstMiss[who] || { st: 8, from: 'L', t: 'std' }; SK.q.push({ who, st: m.st, ts: [m.from], types: [m.t], opt: 1 }); } }
       else if (solo()) { finishSolo(); return; }
-      else if (scores[0] === scores[1]) { SK.so++; for (const who of [SK.first, 1 - SK.first]) SK.q.push({ who, st: 4, ts: ['H', 'L'], so: 1 }); }
+      else if (scores[0] === scores[1]) { SK.so++; for (const who of [SK.first, 1 - SK.first]) SK.q.push({ who, st: 4, ts: ['H', 'L'], types: ['std', 'std'], so: 1 }); }
       else { winShoot(scores[0] > scores[1] ? 0 : 1); return; }
     }
     const q = SK.q[SK.i];
@@ -798,7 +840,7 @@ function nextTurn() {
   phase = 'ready'; phaseT = 0; pres = null;
   if (cpuOn() && turn === 1) cpuS.wait = rand(.4, .7);
 }
-// on your own, the round simply ends: skeet after the 25th clay, otherwise on reaching the points
+// on your own, the round simply ends: skeet after the 25th clay, shot for shot after the last clay, otherwise on reaching the points
 function finishSolo() {
   state = 'ko'; koT = 0; winner = 0; soloTime = gameT;
   showBanner('The round is done', 2.6, null, true); emitFx({ k: 'win' });
@@ -812,26 +854,25 @@ function winShoot(o) {
   say('win', o, true);
 }
 function updateTurns(dt) {
-  if (state !== 'play' || introT > 0 || (cfg.mode === 'live' && !skeet())) return;
+  if (state !== 'play' || introT > 0 || SF || (cfg.mode === 'live' && !skeet())) return;
   phaseT += dt;
   if (phase === 'ready') { if (phaseT >= 1.1) startPresentation(); }
   else if (phase === 'pull') { if (phaseT >= .5) { launchPresentation(); phase = 'fly'; phaseT = 0; } }
   else if (phase === 'fly') { if (!targets.length && !shots.length && phaseT > .3) { endPresentation(); phase = 'after'; phaseT = 0; } }
   else if (phase === 'after') { if (phaseT >= .9) nextTurn(); }
 }
-// open shoot: the traps keep throwing
+// open shoot: the traps keep throwing, sides from one fair shuffle shared by both shooters
 function updateOpen(dt) {
   if (state !== 'play' || introT > 0 || cfg.mode !== 'live' || skeet()) return;
   spawnT -= dt;
-  const live = targets.filter(b => b.t !== 'gold').length;
+  const live = targets.filter(b => b.t !== 'gold').length, sm = speedAt(level);
   if (live < maxT(level) && spawnT <= 0) {
-    const t = pickType();
-    if (level >= 2 && live + 2 <= maxT(level) && (t === 'std' || t === 'swift') && Math.random() < .35) { targets.push(launch(t, 'H')); targets.push(launch(t, 'L')); }
-    else targets.push(launch(t));
+    targets.push(launch(pickType(), drawSide(0), sm));
+    if (level >= 2 && live + 2 <= maxT(level) && Math.random() < .35) targets.push(launch(pickType(), drawSide(0), sm));
     emitFx({ k: 'trap' });
-    spawnT = level === 1 ? 1.6 : rand(1.1, 2.4);
+    spawnT = (level === 1 ? 1.6 : rand(1.1, 2.4)) / Math.max(.6, sm);
   }
-  if (level >= 2 && !targets.some(b => b.t === 'gold')) { goldT -= dt; if (goldT <= 0) { targets.push(launch('gold')); emitFx({ k: 'gold' }); goldT = rand(55, 110); } }
+  if (level >= 2 && !targets.some(b => b.t === 'gold')) { goldT -= dt; if (goldT <= 0) { targets.push(launch('gold', drawSide(0), sm)); emitFx({ k: 'gold' }); goldT = rand(55, 110); } }
 }
 
 /* ---------------- shooting (authority) ---------------- */
@@ -857,8 +898,6 @@ function simShots(dt) {
       const x = s.x0 + s.dx * s.d, y = s.y0 + s.dy * s.d, r = spreadAt(G, s.d);
       if (inLadies(x, y)) { s.done = true; emitFx({ k: 'stray', x: Math.round(x), y: Math.round(y) }); say('stray', s.owner, true); break; }
       if (y > GB + 6) { s.done = true; emitFx({ k: 'dirt', x: Math.round(x) }); break; }
-      const o = obstacles.find(o => obsHit(o, x, y));
-      if (o) { s.done = true; emitFx({ k: 'obs', x: Math.round(x), y: Math.round(y), m: o.kind }); break; }
       for (let j = targets.length - 1; j >= 0; j--) { const b = targets[j]; if (Math.hypot(b.x - x, b.y - y) < r + TT[b.t].r) breakTarget(b, s, j); }
       if (s.d > range() || x < XL - 100 || x > XR + 100 || y < YT - 100) s.done = true;
     }
@@ -870,7 +909,7 @@ function breakTarget(b, s, j) {
   const o = s.owner, T = TT[b.t], f = feats[o];
   const base = SK ? (b.t === 'gold' ? 5 : 1) : T.pts;
   const bonus = !SK && s.hits > 1 ? T.pts * (s.hits - 1) : 0;   // the second target on one shot scores double
-  scores[o] += base + bonus; broken[o]++; levelKills++;
+  scores[o] += base + bonus; broken[o]++; levelKills++; tSum[o] += b.age; tN[o]++;
   if (pres && b.si !== undefined) { pres.broken++; pres.hit.push(b.si); }
   f.cur++; f.run = Math.max(f.run, f.cur); if (b.t === 'gold') f.gold++; if (s.hits > 1) f.two++;
   emitFx({ k: 'brk', x: Math.round(b.x), y: Math.round(b.y), t: b.t, s: o, p: base + bonus, l: b.look === 'glass' ? 1 : 0, vx: Math.round(b.vx), vy: Math.round(b.vy) });
@@ -880,7 +919,7 @@ function breakTarget(b, s, j) {
     if (f.cur === 3 || f.cur === 6 || f.cur === 10) say('run', o, true); else if (Math.random() < .35) say('hit', o);
     if (Math.random() < .5) emitFx({ k: 'lad', a: 'clap' });
   }
-  if (!SK) {
+  if (!SK && !SF) {
     if (state === 'play' && scores[o] >= cfg.round) winShoot(o);
     else if (state === 'play' && levelKills >= levelNeed(level)) {
       level++; levelKills = 0; emitFx({ k: 'horn' });
@@ -998,12 +1037,6 @@ function fx(e) {
     case 'gold': sfx.chime(); popText(W / 2, H / 2 + 80, `A ${goldWord().toUpperCase()}! Worth ${skeet() ? 5 : 20} points`, '#ffd36a'); break;
     case 'land': sfx.thud(); for (let i = 0; i < 5; i++) parts.push({ k: 'dust', x: num(e.x) + rand(-10, 10), y: GB - 4, vx: rand(-40, 40), vy: rand(-40, -10), life: .8, t: 0, r: rand(6, 10), c: cfg.setting === 'winter' ? 'rgba(240,244,248,' : 'rgba(110,96,70,' }); break;
     case 'dirt': sfx.dirt(); chips(num(e.x), GB - 2, 9, cfg.setting === 'winter' ? ['#f2f5f7', '#cfd8de'] : ['#5a4a32', '#3f3424', '#6a8a3a'], 180); break;
-    case 'obs': {
-      const x = num(e.x), y = num(e.y), m = e.m;
-      if (m === 'oak' || m === 'topiary') { sfx.leaves(); for (let i = 0; i < 12; i++) parts.push({ k: 'leaf', x: x + rand(-20, 20), y: y + rand(-20, 20), vx: rand(-120, 120), vy: rand(-140, 20), life: rand(2, 3.5), t: 0, r: rand(4, 7), c: pick(SEASON[cfg.setting].leaf), rot: rand(0, 6), ph: rand(0, 6) }); }
-      else { sfx.ping(); chips(x, y, 12, ['#e4ddd0', '#bdb5a6', '#fff8e8']); }
-      break;
-    }
     case 'stray': sfx.shriek(); ladiesReact('duck'); chips(num(e.x), num(e.y), 10, ['#ffffff', '#e8e0d0', '#a8c8e0']); flyingCup(); break;
   }
 }
@@ -1036,25 +1069,41 @@ function cpuUpdate(dt) {
   let tb = ts[0], bs = -1e9;
   for (const b of ts) { const s = TT[b.t].pts / TT[b.t].r * 10 + Math.random() * 2; if (s > bs) { bs = s; tb = b; } }
   const sol = intercept(me, tb); if (!sol) return;
-  const m0 = muzzleAt(me, Math.atan2(sol.y - shoulder(me).y, sol.x - shoulder(me).x));
-  for (let k = .05; k <= 1; k += .05) { const x = m0.x + (sol.x - m0.x) * k, y = m0.y + (sol.y - m0.y) * k; if (obstacles.some(o => obsHit(o, x, y))) return; }
   const err = (tb.t === 'gold' ? 220 : 150) * 1.2 * (Math.random() < .2 ? 1.8 : 1);
   fire(me, sol.x + gauss() * err, sol.y + gauss() * err);
   cpuS.wait = cfg.mode === 'live' && !skeet() ? rand(.5, 1.2) : rand(.3, .55);
 }
 
 /* ---------------- input ---------------- */
+// shot for shot: the PULL button sits by the puller's feet, on the inward side
+function pullBtn() { const pu = puller(); if (!pu || !localControl(pu) || state !== 'play') return null; const k = pu.x < CX ? 1 : -1; return { x: pu.x + k * 165, y: GB + 78, pu }; }
+const pullReady = () => authority() ? sfPullOpen() : !!sfInfo.pull;
+function doPull() {
+  const pb = pullBtn(); if (!pb || !pullReady()) { sfx.click(); return; }
+  if (role === 'guest') { NET.pullSeq++; guestPublish(true); } else if (canPull(pb.pu.id)) sfPull();
+}
+function drawPullBtn() {
+  const pb = pullBtn(); if (!pb) return;
+  const ok = pullReady();
+  circ(pb.x, pb.y, 58); fill(ok ? 'rgba(90,26,34,.9)' : 'rgba(20,24,12,.45)', ok ? 'rgba(244,228,184,.9)' : 'rgba(244,228,184,.4)', 3);
+  if (!ok && authority() && SF && phase === 'ready' && phaseT < SF_GAP) { ctx.beginPath(); ctx.arc(pb.x, pb.y, 58, -Math.PI / 2, -Math.PI / 2 + phaseT / SF_GAP * Math.PI * 2); ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(244,228,184,.8)'; ctx.stroke(); }
+  text('PULL', pb.x, pb.y + 2, `30px ${SC}`, ok ? '#fff8e6' : 'rgba(244,228,184,.5)', 'center', false);
+}
 let hover = null;
 function toWorld(e) {
   const r = cvs.getBoundingClientRect(), k = cvs.width / r.width;
   return { x: ((e.clientX - r.left) * k - offX) / scale, y: ((e.clientY - r.top) * k - offY) / scale };
 }
 // both arrows sit on the inward side, since the shooter stands at the very edge
-function stepBtns(p) { const y = GB + 80, k = p.home < CX ? 1 : -1, a = p.home + k * 20, b = p.home + k * 130; return [{ x: Math.min(a, b), y, d: -1 }, { x: Math.max(a, b), y, d: 1 }]; }
+function stepBtns(p) {
+  if (solo()) { const y = GB + 80; return [{ x: clamp(p.x - 120, 50, W - 290), y, d: -1 }, { x: clamp(p.x + 120, 290, W - 50), y, d: 1 }]; } // they walk with you
+  const y = GB + 80, k = p.home < CX ? 1 : -1, a = p.home + k * 20, b = p.home + k * 130; return [{ x: Math.min(a, b), y, d: -1 }, { x: Math.max(a, b), y, d: 1 }]; }
 const showSteps = p => localControl(p) && canMove(p) && !skeet();
 cvs.addEventListener('pointerdown', e => {
   ac(); if (state !== 'play') return;
   const m = toWorld(e);
+  const pb = pullBtn();
+  if (pb && Math.hypot(m.x - pb.x, m.y - pb.y) < 76) { doPull(); e.preventDefault(); return; }
   for (const p of players) {
     if (!showSteps(p) || p.hold) continue;
     for (const b of stepBtns(p)) if (Math.hypot(m.x - b.x, m.y - b.y) < 62) { p.hold = { id: e.pointerId, d: b.d }; try { cvs.setPointerCapture(e.pointerId); } catch (_) {} return; }
@@ -1078,7 +1127,7 @@ cvs.addEventListener('pointerleave', () => { hover = null; });
 function release(e) { for (const p of players) if (p.hold && p.hold.id === e.pointerId) p.hold = null; }
 cvs.addEventListener('pointerup', release);
 cvs.addEventListener('pointercancel', release);
-window.addEventListener('keydown', e => { if (e.target && e.target.tagName === 'INPUT') return; keys[e.code] = true; if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.code) && state === 'play') e.preventDefault(); });
+window.addEventListener('keydown', e => { if (e.target && e.target.tagName === 'INPUT') return; keys[e.code] = true; if (e.code === 'Space' && state === 'play' && pullBtn()) { e.preventDefault(); if (!e.repeat) doPull(); } if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.code) && state === 'play') e.preventDefault(); });
 window.addEventListener('keyup', e => { keys[e.code] = false; });
 function moveDir(p) {
   let d = 0;
@@ -1090,7 +1139,7 @@ function moveDir(p) {
 }
 
 /* ---------------- online (room capability) ---------------- */
-const NET = { lobby: null, room: null, user: null, code: '', myPeer: '', hostPeer: '', guestPeer: '', fireSeq: 0, fv: null, re: 0, lastF: 0, lastRe: 0, pendingUntil: 0,
+const NET = { lobby: null, room: null, user: null, code: '', myPeer: '', hostPeer: '', guestPeer: '', fireSeq: 0, fv: null, re: 0, lastF: 0, lastRe: 0, pendingUntil: 0, pullSeq: 0, lastPl: 0,
   lastSnap: null, snapAt: 0, lastEvt: -1, pubAt: 0, hostGoneAt: 0, joinAt: 0, unsub: null, names: {} };
 /* ---- Online duels on the website ----
    Inside Claude the game uses Claude's own "room" service. Everywhere else the same
@@ -1282,6 +1331,8 @@ async function recordCareer() {
         const add = (k, v) => { c[k] = (c[k] || 0) + v; };
         add('clays', broken[pid]); add('shots', fired[pid]); add('points', scores[pid]); add('gold', f.gold); add('braces', f.brace); add('twoOne', f.two);
         c.bestRun = Math.max(c.bestRun || 0, f.run);
+        add('tSum', +tSum[pid].toFixed(3)); add('tN', tN[pid]);
+        if (tN[pid] >= 5) c.bestAvg = Math.min(c.bestAvg || 99, +(tSum[pid] / tN[pid]).toFixed(3));
         if (skeet()) c.bestSkeet = Math.max(c.bestSkeet || 0, Math.min(25, broken[pid]));
         c.updated = Date.now();
         return c;
@@ -1299,6 +1350,7 @@ function careerCard(c, who) {
   if (hs.solo) rows.push([MODE_NAME.solo, `${num(hs.solo.p)} rounds`]);
   const acc = num(c.shots) ? ` (${Math.round(num(c.clays) / num(c.shots) * 100)}% of shots)` : '';
   rows.push(['Clays broken', num(c.clays) + acc], ['Points', num(c.points)], ['Golden clays', num(c.gold)], ['Best skeet round', `${num(c.bestSkeet)} of 25`],
+    ['Average speed of shot', num(c.tN) ? (num(c.tSum) / num(c.tN)).toFixed(2) + ' s' : 'none yet'], ['Best round average', num(c.bestAvg) ? num(c.bestAvg).toFixed(2) + ' s' : 'none yet'],
     ['Longest run of breaks', num(c.bestRun)], ['Doubles taken', num(c.braces)], ['Two with one shot', num(c.twoOne)]);
   const t = document.createElement('dl');
   for (const [k, v] of rows) { const dt = document.createElement('dt'), dd = document.createElement('dd'); dt.textContent = k; dd.textContent = String(v); t.append(dt, dd); }
@@ -1340,7 +1392,7 @@ const ROUND_NAME = r => r === 'skeet' ? 'a skeet round of 25' : `first to ${num(
 const PLACE_NAME = { lawn: 'the estate lawn', moor: 'the moor', lake: 'the lakeside', cliff: 'the clifftop', woods: 'the woods' };
 function openChallenge() {
   NET.openAt = netNow();
-  NET.lobby.presence({ open: NET.code, at: NET.openAt, nm: NAMES[0].full, cu: CAREER.uid[0] || '', cfg: { mode: cfg.mode, n: cfg.n, terrain: cfg.terrain, round: String(cfg.round), look: cfg.look } }).catch(() => {});
+  NET.lobby.presence({ open: NET.code, at: NET.openAt, nm: NAMES[0].full, cu: CAREER.uid[0] || '', cfg: { mode: cfg.mode, terrain: cfg.terrain, round: String(cfg.round), look: cfg.look, diff: cfg.diff, sfN: cfg.sfN, sfChal: cfg.sfChal } }).catch(() => {});
 }
 setInterval(() => {
   if (role === 'host' && state === 'waiting' && !NET.guestPeer && NET.openAt && netNow() - NET.openAt > CHALLENGE_LIFE) {
@@ -1364,7 +1416,8 @@ async function renderLobby(peers) {
     left.textContent = `${who} calls a shoot`;
     const sm = document.createElement('small');
     const rd = c.round === 'skeet' ? 'skeet' : c.round;
-    sm.textContent = `${rd === 'skeet' ? 'Skeet, 25 clays' : (c.mode === 'live' ? 'Open shoot' : 'Taking turns') + ', ' + ROUND_NAME(rd)}, ${num(c.n, 0) | 0} obstacles, ${PLACE_NAME[c.terrain] || 'the grounds'}. Code ${q.presence.open}`;
+    const how = rd === 'skeet' ? 'Skeet, 25 clays' : c.mode === 'sfs' ? `Shot for shot, ${num(c.sfN, 20) | 0} clays each, ${c.sfChal === 'speed' ? 'speed' : 'accuracy'} challenge` : (c.mode === 'live' ? 'Open shoot' : 'Taking turns') + ', ' + ROUND_NAME(rd);
+    sm.textContent = `${how}, ${{ easy: 'easy', hard: 'hard' }[c.diff] || 'normal'}, ${PLACE_NAME[c.terrain] || 'the grounds'}. Code ${q.presence.open}`;
     left.appendChild(sm);
     const cu = cleanTxt(q.presence.cu, 40);
     if (cu) {
@@ -1421,7 +1474,7 @@ function hostPeers(peers) {
       NAMES[1] = nameFrom(c.presence.nm, 'Whitlock'); CAREER.uid[1] = cleanTxt(c.presence.cu, 40);
       cfg.gun[1] = gunOk(c.presence.gn);
       const inp = c.presence.in || {};
-      NET.lastF = num(inp.f, 0); NET.lastRe = num(inp.re, 0);
+      NET.lastF = num(inp.f, 0); NET.lastRe = num(inp.re, 0); NET.lastPl = num(inp.pl, 0);
       NET.room.presence({ guest: c.peer }).catch(() => {});
       NET.lobby.presence({ open: null, cfg: null }).catch(() => {});
       startMatch();
@@ -1434,7 +1487,7 @@ async function joinDuel(code) {
   if (code.length !== 4) { $('#onlineNote').textContent = 'A challenge code has four digits.'; return; }
   try { NET.room = await NET.lobby.join(ROOM + code); }
   catch (e) { $('#onlineNote').textContent = 'That duel could not be joined. Check the code and try again.'; return; }
-  role = 'spec'; NET.code = code; NET.hostPeer = ''; NET.fireSeq = 0; NET.fv = null; NET.re = 0; NET.lastEvt = -1; NET.lastSnap = null; NET.joinAt = performance.now(); NET.hostGoneAt = 0;
+  role = 'spec'; NET.code = code; NET.hostPeer = ''; NET.fireSeq = 0; NET.pullSeq = 0; NET.fv = null; NET.re = 0; NET.lastEvt = -1; NET.lastSnap = null; NET.joinAt = performance.now(); NET.hostGoneAt = 0;
   NET.myPeer = myPeerIn(NET.room);
   NAMES[1] = myName(); saveNames();
   CAREER.uid = ['', (signedIn(0) || {}).uid || ''];
@@ -1455,13 +1508,14 @@ function netLost(msg) { netLeave(); state = 'menu'; showWait('The shoot is ended
 function hostPublish() {
   const now = performance.now(); if (now - NET.pubAt < 45) return; NET.pubAt = now;
   const s = {
-    st: state, md: cfg.mode, rd: String(cfg.round), lk: cfg.look, n: cfg.n, tr: cfg.terrain, se: cfg.setting, sd: seed, gt: +gameT.toFixed(2),
+    st: state, md: cfg.mode, rd: String(cfg.round), lk: cfg.look, df: cfg.diff, tr: cfg.terrain, se: cfg.setting, sd: seed, gt: +gameT.toFixed(2),
     nm: [NAMES[0].full, NAMES[1].full], gn: [players[0] ? players[0].gun : 'light', players[1] ? players[1].gun : 'light'],
     w: Math.round(wind), tn: turn, ph: PHASES.indexOf(phase), it: +Math.max(0, introT).toFixed(2), wn: [wins[0], wins[1]], wr: winner, mn: matchNo,
     sc: [scores[0], scores[1]], bk: [broken[0], broken[1]], fi: [fired[0], fired[1]], lv: level, lks: levelKills,
     sk: [skInfo.st, skInfo.lab, skInfo.done[0], skInfo.done[1]],
+    sf: [sfInfo.done[0], sfInfo.done[1], cfg.sfN, cfg.sfSwap, cfg.sfPair, cfg.sfChal === 'speed' ? 1 : 0, sfInfo.pull], ts: [+tSum[0].toFixed(3), tN[0], +tSum[1].toFixed(3), tN[1]],
     p: players.map(p => [Math.round(p.x), +p.aim.toFixed(3), p.shells, +p.reloadT.toFixed(2), +p.cool.toFixed(2)]),
-    t: targets.slice(0, 8).map(b => [b.id, TKEYS.indexOf(b.t), Math.round(b.x), Math.round(b.y), Math.round(b.vx), Math.round(b.vy), b.look === 'glass' ? 1 : 0]),
+    t: targets.slice(0, 8).map(b => [b.id, TKEYS.indexOf(b.t), Math.round(b.x), Math.round(b.y), Math.round(b.vx), Math.round(b.vy), b.look === 'glass' ? 1 : 0, +(b.sm || 1).toFixed(3)]),
     ft: feats.map(f => [f.gold, f.run, f.brace, f.two]), cu: [CAREER.uid[0] || '', CAREER.uid[1] || ''],
     e: evts,
   };
@@ -1477,6 +1531,8 @@ function hostReadGuest() {
     NET.lastF = f;
     if (Array.isArray(inp.fv) && canFire(p)) fire(p, clamp(num(inp.fv[0]), -500, W + 500), clamp(num(inp.fv[1]), -300, H));
   }
+  const pl = num(inp.pl, 0);
+  if (pl > NET.lastPl) { NET.lastPl = pl; if (canPull(1)) sfPull(); }
   const re = num(inp.re, 0);
   if (re > NET.lastRe) { NET.lastRe = re; if (state === 'over') startMatch(); }
 }
@@ -1484,7 +1540,7 @@ function hostReadGuest() {
 function guestPublish(force) {
   const now = performance.now(); if (!force && now - NET.pubAt < 45) return; NET.pubAt = now;
   const p = players[1]; if (!p) return;
-  NET.room.presence({ in: { x: Math.round(p.x), f: NET.fireSeq, fv: NET.fv, re: NET.re } }).catch(() => {});
+  NET.room.presence({ in: { x: Math.round(p.x), f: NET.fireSeq, fv: NET.fv, re: NET.re, pl: NET.pullSeq } }).catch(() => {});
 }
 function guestSync() {
   const peers = NET.room.peers();
@@ -1504,13 +1560,19 @@ function guestSync() {
   applySnap(s, prev);
 }
 function applySnap(s, prev) {
-  const newLevel = !prev || prev.sd !== s.sd || prev.n !== s.n || prev.tr !== s.tr || prev.se !== s.se || prev.rd !== s.rd;
-  cfg.mode = s.md === 'live' ? 'live' : 'turn';
+  const newLevel = !prev || prev.sd !== s.sd || prev.tr !== s.tr || prev.se !== s.se || prev.rd !== s.rd;
+  cfg.mode = ['live', 'sfs'].includes(s.md) ? s.md : 'turn';
+  cfg.diff = DIFF[s.df] ? s.df : 'normal';
+  if (Array.isArray(s.sf)) {
+    sfInfo = { done: [num(s.sf[0]) | 0, num(s.sf[1]) | 0], n: clamp(num(s.sf[2], 20) | 0, 1, 99), pull: s.sf[6] ? 1 : 0 };
+    cfg.sfN = sfInfo.n; cfg.sfSwap = num(s.sf[3], 1) | 0; cfg.sfPair = s.sf[4] === 2 ? 2 : 1; cfg.sfChal = s.sf[5] ? 'speed' : 'acc';
+  }
+  if (Array.isArray(s.ts)) { tSum[0] = num(s.ts[0]); tN[0] = num(s.ts[1]) | 0; tSum[1] = num(s.ts[2]); tN[1] = num(s.ts[3]) | 0; }
   cfg.round = s.rd === 'skeet' ? 'skeet' : clamp(num(+s.rd, 25) | 0, 1, 999);
   cfg.look = ['clay', 'glass', 'mix'].includes(s.lk) ? s.lk : 'clay';
   if (Array.isArray(s.gn)) cfg.gun = s.gn.slice(0, 2).map(gunOk);
   if (newLevel) {
-    cfg.n = clamp(num(s.n, 0) | 0, 0, 5); cfg.terrain = ['lawn', 'moor', 'lake', 'cliff', 'woods'].includes(s.tr) ? s.tr : 'lawn';
+    cfg.terrain = ['lawn', 'moor', 'lake', 'cliff', 'woods'].includes(s.tr) ? s.tr : 'lawn';
     cfg.setting = ['summer', 'autumn', 'winter'].includes(s.se) ? s.se : 'summer'; seed = num(s.sd, 1) | 0;
     buildLevel(); players = [mkPlayer(0), mkPlayer(1)]; parts = []; texts = []; targets = []; volleys = [];
     if (role === 'guest') countShoot('online');
@@ -1544,7 +1606,7 @@ function applySnap(s, prev) {
       const t = TKEYS[num(d[1]) | 0] || 'std';
       let b = targets.find(q => q.id === d[0]);
       if (!b) b = { id: d[0], x: num(d[2]), y: num(d[3]), spin: rand(0, 6), age: 0 };
-      Object.assign(b, { t, sx: num(d[2]), sy: num(d[3]), vx: num(d[4]), vy: num(d[5]), look: d[6] ? 'glass' : 'clay', g: t === 'gold' ? 0 : t === 'lob' ? GC * 1.15 : GC });
+      Object.assign(b, { t, sx: num(d[2]), sy: num(d[3]), vx: num(d[4]), vy: num(d[5]), look: d[6] ? 'glass' : 'clay', g: GC * (TG[t] === undefined ? 1 : TG[t]) * Math.pow(num(d[7], 1), 2) });
       next.push(b);
     }
     targets = next;
@@ -1603,7 +1665,8 @@ function update(rdt) {
   if (authority() && cfg.mode === 'live' && state === 'play') { liveWindT -= dt; if (liveWindT <= 0) { liveWindT = rand(5, 9); wind = clamp(wind + rand(-60, 60), -120, 120); } }
 
   if (authority()) {
-    updateTurns(dt); updateOpen(dt);
+    updateTurns(dt); updateOpen(dt); updateSF(dt);
+    if (SF) sfInfo = { done: SF.done.slice(), n: SF.n, pull: sfPullOpen() ? 1 : 0 };
     for (let i = targets.length - 1; i >= 0; i--) {
       const b = targets[i], ev = stepTarget(b, dt);
       if (ev) { targets.splice(i, 1); if (ev === 'land') emitFx({ k: 'land', x: Math.round(b.x) }); }
@@ -1621,7 +1684,7 @@ function update(rdt) {
     if (p.tx !== null && skeet()) { const d = p.tx - p.x; if (Math.abs(d) > 2) { p.x += Math.sign(d) * Math.min(Math.abs(d), 300 * dt); p.walk += dt * 10; p.aim = d > 0 ? .95 : Math.PI - .95; } }
     if (localControl(p) && canMove(p)) {
       const d = moveDir(p);
-      if (d) { const ox = p.x; p.x = clamp(p.x + d * 105 * dt, p.minX, p.maxX); if (p.x !== ox) { p.walk += dt * 9; if (Math.floor(p.walk / Math.PI) !== Math.floor((p.walk - dt * 9) / Math.PI)) sfx.step(); } }
+      if (d) { const ox = p.x; p.x = clamp(p.x + d * (solo() ? 320 : 105) * dt, p.minX, p.maxX); if (p.x !== ox) { p.walk += dt * 9; if (Math.floor(p.walk / Math.PI) !== Math.floor((p.walk - dt * 9) / Math.PI)) sfx.step(); } }
     }
     if (!skeet()) p.x = clamp(p.x, p.minX, p.maxX);
     // a local shooter on a computer follows the mouse with the gun
@@ -1649,7 +1712,7 @@ function updateVolleys(dt) {
     v.t += dt; if (v.dead) continue;
     v.d += GUN[v.g].spd * fk() * dt;
     const x = v.x0 + v.dx * v.d, y = v.y0 + v.dy * v.d;
-    if (y > GB + 6 || v.d > range() || obstacles.some(o => obsHit(o, x, y)) || inLadies(x, y)) v.dead = true;
+    if (y > GB + 6 || v.d > range() || inLadies(x, y)) v.dead = true;
   }
   volleys = volleys.filter(v => !v.dead && v.t < 1.5);
 }
@@ -1671,16 +1734,19 @@ const mmss = t => Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart
 function endScreen() {
   const l = 1 - winner, a = NAMES[0].short, b = NAMES[1].short;
   $('#over .slain').textContent = solo() ? 'The round is done' : 'The day is won';
+  const sfm = cfg.mode === 'sfs' && !skeet(), n = cfg.sfN;
   if (solo()) {
-    const pc = fired[0] ? Math.round(broken[0] / fired[0] * 100) : 0;
-    $('#verdict').textContent = skeet() ? `${NAMES[0].full} broke ${broken[0]} of 25.` : `${NAMES[0].full} reached ${scores[0]} points in ${mmss(soloTime)}.`;
-    $('#tally').textContent = `${broken[0]} clays broken from ${fired[0]} shots (${pc}%). Longest run: ${feats[0].run}.`;
+    const pc = fired[0] ? Math.min(100, Math.round(broken[0] / fired[0] * 100)) : 0;
+    $('#verdict').textContent = skeet() ? `${NAMES[0].full} broke ${broken[0]} of 25.` : sfm ? `${NAMES[0].full} broke ${broken[0]} of ${n}.` : `${NAMES[0].full} reached ${scores[0]} points in ${mmss(soloTime)}.`;
+    $('#tally').textContent = `Clays broken: ${broken[0]} from ${fired[0]} shots (${pc}%). Speed of shot: ${avgT(0)} on average. Longest run: ${feats[0].run}.`;
   } else {
   $('#verdict').textContent = skeet()
     ? `${NAMES[winner].full} wins the skeet round, ${scores[winner]} to ${scores[l]}.`
+    : sfm && cfg.sfChal === 'speed' ? `${NAMES[winner].full} wins the speed challenge, ${sfSpeed(winner).toFixed(2)} s a clay to ${sfSpeed(l).toFixed(2)} s (a miss counts as ${SF_MISS} s).`
+    : sfm ? `${NAMES[winner].full} wins the accuracy challenge, ${broken[winner]} to ${broken[l]} of ${n}${broken[0] !== broken[1] ? '' : fired[0] !== fired[1] ? ', using fewer shots' : ', breaking them faster'}.`
     : `${NAMES[winner].full} wins the day, ${scores[winner]} points to ${scores[l]}.`;
-  const pct = i => fired[i] ? ` (${Math.round(broken[i] / fired[i] * 100)}%)` : '';
-  $('#tally').textContent = `Broken: ${a} ${broken[0]}${pct(0)}, ${b} ${broken[1]}${pct(1)}. Rounds won: ${a} ${roman(wins[0])}, ${b} ${roman(wins[1])}.`;
+  const pct = i => fired[i] ? ` (${Math.min(100, Math.round(broken[i] / fired[i] * 100))}%)` : ''; // two clays with one shot can't make it more than 100%
+  $('#tally').textContent = `Clays broken: ${a} ${broken[0]}${pct(0)}, ${b} ${broken[1]}${pct(1)}. Speed of shot: ${a} ${avgT(0)}, ${b} ${avgT(1)}. Rounds won: ${a} ${roman(wins[0])}, ${b} ${roman(wins[1])}.`;
   }
   const again = $('#againBtn'); again.hidden = role === 'spec'; again.disabled = false;
   again.textContent = role === 'guest' ? 'Call for another round' : 'Another round';
@@ -1698,7 +1764,7 @@ function countEnd() {
   const mine = role === 'guest' ? [1] : role === 'host' || cfg.opp === 'cpu' || solo() ? [0] : [0, 1];
   ste('track', 'rounds-finished');
   for (const i of mine) {
-    ste('value', 'points', scores[i]); ste('value', 'clays', broken[i]);
+    ste('value', 'points', scores[i]); ste('value', 'clays', broken[i]); if (tN[i]) ste('value', 'break-ms', Math.round(tSum[i] / tN[i] * 1000));
     if (feats[i].gold) ste('detail', 'golden-clay', feats[i].gold);
     if (feats[i].two) ste('detail', 'two-with-one-shot');
     ste('detail', 'gun-' + (players[i] ? players[i].gun : 'light'));
@@ -1837,33 +1903,6 @@ function buildBackdrop() {
 }
 
 /* ---------------- drawing the field ---------------- */
-function drawObstacle(o) {
-  const S = SEASON[cfg.setting], cx = o.x, h = o.h, w = o.w;
-  ell(cx, GB + 4, w * .5, 9); fill('rgba(0,0,0,.18)');
-  if (o.kind === 'oak') {
-    ctx.fillStyle = '#5a3e26'; ctx.beginPath(); ctx.moveTo(cx - 20, GB); ctx.lineTo(cx - 12, GB - h * .55); ctx.lineTo(cx + 12, GB - h * .55); ctx.lineTo(cx + 20, GB); ctx.fill();
-    const cols = S.snow ? ['#3d4f40', '#4a5e4c'] : cfg.setting === 'autumn' ? ['#a8602a', '#c27a30', '#8a4a20'] : ['#3f6a2a', '#4f7a34', '#36602a'];
-    for (const q of o.parts) if (q.c) { circ(q.c[0], q.c[1], q.c[2]); fill(cols[(q.c[0] | 0) % cols.length]); }
-    circ(cx - w * .12, GB - h * .78, w * .2); fill('rgba(255,255,255,.08)');
-    if (S.snow) for (const q of o.parts) if (q.c) { ell(q.c[0], q.c[1] - q.c[2] * .72, q.c[2] * .7, q.c[2] * .22); fill('rgba(255,255,255,.85)'); }
-  } else if (o.kind === 'statue') {
-    rr(ctx, cx - w / 2, GB - h * .34, w, h * .34, 3); fill(S.stone, 'rgba(0,0,0,.25)', 1.5);
-    const fy = GB - h * .34, fh = h * .66, c2 = '#e8e2d6';
-    ctx.fillStyle = c2; ctx.beginPath(); ctx.moveTo(cx - w * .22, fy); ctx.lineTo(cx - w * .16, fy - fh * .7); ctx.lineTo(cx + w * .16, fy - fh * .7); ctx.lineTo(cx + w * .22, fy); ctx.fill();
-    circ(cx, fy - fh * .8, w * .12); fill(c2);
-    line(cx + w * .12, fy - fh * .66, cx + w * .3, fy - fh * .95, 6, c2);
-    ctx.strokeStyle = 'rgba(0,0,0,.15)'; ctx.lineWidth = 1; ctx.stroke();
-  } else if (o.kind === 'topiary') {
-    rr(ctx, cx - w * .3, GB - 46, w * .6, 46, 4); fill('#a8583a', 'rgba(0,0,0,.25)', 1.5);
-    const col = S.snow ? '#3a4a3a' : '#2f5a28';
-    for (const q of o.parts) if (q.c) { circ(q.c[0], q.c[1], q.c[2]); fill(col); circ(q.c[0] - q.c[2] * .3, q.c[1] - q.c[2] * .3, q.c[2] * .4); fill('rgba(255,255,255,.08)'); if (S.snow) { ell(q.c[0], q.c[1] - q.c[2] * .75, q.c[2] * .65, q.c[2] * .2); fill('rgba(255,255,255,.85)'); } }
-  } else {
-    const top = GB - h;
-    ctx.fillStyle = S.stone; ctx.beginPath(); ctx.moveTo(cx - w / 2, GB); ctx.lineTo(cx - w / 2, top + 14); ctx.lineTo(cx - w * .1, top); ctx.lineTo(cx + w * .2, top + 22); ctx.lineTo(cx + w / 2, top + 8); ctx.lineTo(cx + w / 2, GB); ctx.fill();
-    for (let i = 1; i < 4; i++) line(cx - w / 2 + i * w / 4, top + 24, cx - w / 2 + i * w / 4, GB - 6, 2, 'rgba(0,0,0,.12)');
-    ctx.fillStyle = S.stone; ctx.fillRect(cx - w / 2 - 8, GB - 18, w + 16, 18);
-  }
-}
 function drawStations() {
   if (!skeet() || !players.length) return;
   for (let st = 1; st <= 8; st++) {
@@ -1892,8 +1931,9 @@ function drawTarget(b) {
   }
   const tilt = .3 + .22 * Math.abs(Math.sin(b.spin * .25)), rot = clamp(Math.atan2(b.vy, Math.abs(b.vx) + 1) * .35, -.5, .5) * Math.sign(b.vx || 1);
   ell(b.x, b.y + 3, r, r * tilt, rot); fill('#1d1712');
-  ell(b.x, b.y, r, r * tilt, rot); fill(gold ? '#f2c64a' : '#e2712c', 'rgba(29,23,18,.8)', 1.5);
-  ell(b.x, b.y - r * tilt * .2, r * .55, r * tilt * .45, rot); fill(gold ? '#fff0b0' : '#f09a50');
+  const zip = b.t === 'zip';
+  ell(b.x, b.y, r, r * tilt, rot); fill(gold ? '#f2c64a' : zip ? '#c8402a' : '#e2712c', 'rgba(29,23,18,.8)', 1.5);
+  ell(b.x, b.y - r * tilt * .2, r * .55, r * tilt * .45, rot); fill(gold ? '#fff0b0' : zip ? '#f4e8d8' : '#f09a50');
 }
 function drawShooter(p) {
   const S = p.S, lady = NAMES[p.id] && NAMES[p.id].title === 'Lady', f = p.facing, step = Math.sin(p.walk) * 6;
@@ -2066,13 +2106,14 @@ function drawHUD() {
     let fs = 27; ctx.font = `${fs}px ${SC}`;
     while (fs > 15 && ctx.measureText(NAMES[p.id].full).width > w - 120) { fs -= 1; ctx.font = `${fs}px ${SC}`; }
     text(NAMES[p.id].full, tx, 44, `${fs}px ${SC}`, '#ece4cf', al);
-    let sub = skeet() ? `${skInfo.done[p.id]} of 25 shot` : `${broken[p.id]} broken`;
-    sub += ', ' + GUN[p.gun].name;
-    if ((cfg.mode === 'turn' || skeet()) && state === 'play' && turn === p.id) sub = (skeet() ? `${skInfo.done[p.id]} of 25, ` : '') + 'to shoot';
+    const sf = cfg.mode === 'sfs' && !skeet();
+    let sub = skeet() ? `${skInfo.done[p.id]} of 25 shot` : sf ? `${sfInfo.done[p.id]} of ${sfInfo.n} pulled` : `${broken[p.id]} broken`;
+    sub += tN[p.id] ? ', avg ' + avgT(p.id) : ', ' + GUN[p.gun].name;
+    if ((cfg.mode !== 'live' || skeet()) && state === 'play' && turn === p.id) sub = (skeet() ? `${skInfo.done[p.id]} of 25, ` : sf ? `${sfInfo.done[p.id]} of ${sfInfo.n}, ` : '') + 'to shoot';
     if (role !== 'local' && localControl(p)) sub += ', you';
     text(sub, tx, 76, `italic 18px ${SERIF}`, '#c8b27a', al, false);
-    text(String(scores[p.id]), ox, 50, `44px ${SC}`, '#ece4cf', oal);
-    text(skeet() ? 'broken' : `of ${cfg.round}`, ox, 84, `italic 16px ${SERIF}`, 'rgba(236,228,207,.55)', oal, false);
+    text(String(sf ? broken[p.id] : scores[p.id]), ox, 50, `44px ${SC}`, '#ece4cf', oal);
+    text(skeet() || sf ? 'broken' : `of ${cfg.round}`, ox, 84, `italic 16px ${SERIF}`, 'rgba(236,228,207,.55)', oal, false);
     // cartridges left, under the name box
     const cy = 128, cx0 = left ? bx + 26 : bx + w - 26;
     const showShells = cfg.mode === 'live' && !skeet() || turn === p.id;
@@ -2084,7 +2125,8 @@ function drawHUD() {
   const wx = X0 + W / 2;
   ctx.fillStyle = 'rgba(16,20,10,.72)'; ctx.fillRect(wx - 130, 18, 260, 108);
   ctx.strokeStyle = 'rgba(168,135,74,.6)'; ctx.lineWidth = 1.5; ctx.strokeRect(wx - 126, 22, 252, 100);
-  const head = skeet() ? (skInfo.lab === 'so' ? 'Shoot-off' : skInfo.lab === 'opt' ? 'The option' : 'Station ' + roman(skInfo.st)) : 'Level ' + roman(level);
+  const sfm = cfg.mode === 'sfs' && !skeet();
+  const head = skeet() ? (skInfo.lab === 'so' ? 'Shoot-off' : skInfo.lab === 'opt' ? 'The option' : 'Station ' + roman(skInfo.st)) : sfm ? 'Shot for shot' : 'Level ' + roman(level);
   text(head, wx, 40, `24px ${SC}`, '#ece4cf', 'center', false);
   const str = Math.abs(windShown) / 120, d = windShown >= 0 ? 1 : -1;
   line(wx, 56, wx, 88, 2.5, '#6b6a42');
@@ -2094,7 +2136,7 @@ function drawHUD() {
   for (let i = 8; i >= 0; i--) { const k = i / 8; ctx.lineTo(wx + d * L * k, 76 - k * 9 + Math.sin(time * 7 - k * 5) * 3 * k * (0.4 + str)); }
   ctx.closePath(); fill('#5a1a22', 'rgba(0,0,0,.6)', 1);
   text(str < .07 ? 'still air' : 'wind ' + roman(Math.max(1, Math.round(str * 5))), wx - d * 62, 72, `italic 17px ${SERIF}`, '#c8b27a', 'center', false);
-  text(skeet() ? 'one shot per clay' : `${levelKills} of ${levelNeed(level)} to the next level`, wx, 108, `italic 15px ${SERIF}`, 'rgba(236,228,207,.6)', 'center', false);
+  text(skeet() ? 'one shot per clay' : sfm ? (cfg.sfChal === 'speed' ? 'speed challenge' : 'accuracy challenge') : `${levelKills} of ${levelNeed(level)} to the next level`, wx, 108, `italic 15px ${SERIF}`, 'rgba(236,228,207,.6)', 'center', false);
 }
 
 function draw() {
@@ -2103,7 +2145,6 @@ function draw() {
   if (shake > 0) ctx.translate(rand(-shake, shake), rand(-shake, shake));
   ctx.drawImage(bg, XL, YT, XR - XL, YB - YT);
   drawStations();
-  for (const o of obstacles) drawObstacle(o);
   for (const b of targets) drawTarget(b);
   for (const p of players) drawShooter(p);
   for (const q of parts) {
@@ -2124,6 +2165,7 @@ function draw() {
     else { circ(r.x, r.y, 1.6 * r.s); ctx.fillStyle = 'rgba(255,252,220,.55)'; ctx.fill(); }
   }
   for (const p of players) drawStepButtons(p);
+  drawPullBtn();
   drawButlerSays();
   drawCross();
   for (const t of texts) { const k = t.t / t.life; ctx.globalAlpha = k < .1 ? k / .1 : k > .7 ? (1 - k) / .3 : 1; text(t.text, t.x, t.y - k * 40, `italic ${Math.round(28 * Z)}px ${SERIF}`, t.c || '#f4e4b8'); ctx.globalAlpha = 1; }
@@ -2161,12 +2203,23 @@ seg('#gun2Seg', v => { cfg.gun[1] = gunOk(v); gunNotes(); saveNames(); });
 loadNames(); gunNotes();
 for (const id of ['#nameIn', '#placeIn', '#name2In', '#place2In']) $(id).addEventListener('change', saveNames);
 for (const i of [1, 2]) $('#ttl' + i).onclick = () => { const b = $('#ttl' + i); b.textContent = b.textContent === 'Lady' ? 'Lord' : 'Lady'; sfx.tick(); saveNames(); };
-// a skeet round is always shot in turns
-function syncRules() { const sk = skeet(); $('#modeSeg').querySelectorAll('button').forEach(b => { b.disabled = sk && b.dataset.v === 'live'; }); if (sk && cfg.mode === 'live') $('#modeSeg [data-v="turn"]').click(); }
+// a skeet round is always shot in turns; shot for shot sets its own length, so it has its own settings instead of "The round"
+function syncRules() {
+  const sk = skeet();
+  $('#modeSeg').querySelectorAll('button').forEach(b => { b.disabled = sk && b.dataset.v !== 'turn'; });
+  if (sk && cfg.mode !== 'turn') { $('#modeSeg [data-v="turn"]').click(); return; }
+  const sf = cfg.mode === 'sfs';
+  document.querySelectorAll('.sfRow').forEach(el => { el.hidden = !sf; });
+  $('#rdLbl').hidden = $('#rdSeg').hidden = sf;
+}
 seg('#rdSeg', v => { cfg.round = v === 'skeet' ? 'skeet' : +v; syncRules(); previewLevel(); });
-seg('#modeSeg', v => cfg.mode = v);
+seg('#modeSeg', v => { cfg.mode = v; syncRules(); });
+seg('#diffSeg', v => { cfg.diff = DIFF[v] ? v : 'normal'; });
+seg('#sfNSeg', v => { cfg.sfN = +v; });
+seg('#sfSwapSeg', v => { cfg.sfSwap = +v; });
+seg('#sfPairSeg', v => { cfg.sfPair = +v === 2 ? 2 : 1; });
+seg('#sfChalSeg', v => { cfg.sfChal = v === 'speed' ? 'speed' : 'acc'; });
 seg('#lookSeg', v => cfg.look = v);
-seg('#nSeg', v => { cfg.n = +v; previewLevel(); });
 seg('#terrSeg', v => { cfg.terrain = v; previewLevel(); });
 seg('#setSeg', v => { cfg.setting = v; previewLevel(); });
 seg('#oppSeg', v => {
@@ -2231,8 +2284,8 @@ try { if (localStorage.getItem('clay-signed') === '1') { acctMsg(0, 'Opening the
 $('#muteBtn').onclick = () => { muted = !muted; $('#muteBtn').textContent = muted ? 'Sound off' : 'Sound on'; };
 
 window.addEventListener('resize', resize);
-if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') window.__cd = { get: () => ({ state, turn, phase, targets, scores, broken, fired, players, level, SK, obstacles, W, scale, offX, offY }), intercept, cfg, fire, run: (sec, fn) => { for (let i = 0; i < sec * 60; i++) { update(1 / 60); if (fn) fn(); } } };
-seed = 11; obstacles = genObstacles(cfg.n, seed); initWeather();
+if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') window.__cd = { get: () => ({ state, turn, phase, targets, scores, broken, fired, players, level, SK, SF, sfInfo, tSum, tN, W, scale, offX, offY }), intercept, cfg, fire, pull: () => sfPull(), canPull, run: (sec, fn) => { for (let i = 0; i < sec * 60; i++) { update(1 / 60); if (fn) fn(); } } };
+seed = 11; initWeather();
 resize(); buildLevel();
 if (window.claude && typeof window.claude.use === 'function') netInit();
 // An invite link (…/clay-duel/?duel=1234) opens Online and joins that duel
