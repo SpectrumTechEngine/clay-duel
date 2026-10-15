@@ -203,6 +203,11 @@ input.locked{background:rgba(58,58,34,.12);border-style:dashed}
   .online .row{flex-direction:row;justify-content:center}
   .parch .ste-logo{width:170px;margin-top:6px}
 }
+@media (pointer: coarse){
+  #menuBtn,#muteBtn{display:none}
+  #pauseBtn{width:46px;height:46px;min-height:0;padding:0;border-radius:50%;font-size:15px;letter-spacing:-.12em;display:flex;align-items:center;justify-content:center;border-width:2px}
+  #pauseBtn .pWord{display:none}
+}
 @media (orientation: landscape) and (pointer: coarse){
   .mini{font-size:14px;padding:8px 14px;min-height:40px;border-width:2px}
   .corner{gap:10px}
@@ -231,7 +236,7 @@ input.locked{background:rgba(58,58,34,.12);border-style:dashed}
 
   <div class="corner" id="hudBtns" hidden>
     <button class="mini" id="menuBtn">Leave the shoot</button>
-    <button class="mini" id="pauseBtn">Pause ❚❚</button>
+    <button class="mini" id="pauseBtn" aria-label="Pause"><span class="pWord">Pause </span>❚❚</button>
     <button class="mini" id="muteBtn">Sound on</button>
     <span class="netTag" id="netTag"></span>
   </div>
@@ -333,6 +338,7 @@ input.locked{background:rgba(58,58,34,.12);border-style:dashed}
       <p class="slain">Paused</p>
       <p class="how">The clays will wait, and so will the tea.</p>
       <button class="big" id="resumeBtn">Resume</button>
+      <button class="big alt" id="pSound">Sound on</button>
       <button class="big alt" id="pauseLeave">Leave the shoot</button>
     </div>
   </div>
@@ -784,7 +790,7 @@ function sfFinish() {
   winShoot(w);
 }
 function startMatch() {
-  paused = false;
+  unpause();
   seed = Math.floor(Math.random() * 1e6) + 1;
   buildLevel();
   players = solo() ? [mkPlayer(0)] : [mkPlayer(0), mkPlayer(1)];
@@ -1684,7 +1690,6 @@ function guestTargets(dt) {
   }
 }
 function updateNetTag() {
-  $('#pauseBtn').hidden = role !== 'local';
   $('#netTag').textContent = role === 'host' ? `Online shoot ${NET.code}. You are ${NAMES[0].full}.` : role === 'guest' ? `Online shoot ${NET.code}. You are ${NAMES[1].full}.` : role === 'spec' ? `Watching shoot ${NET.code}` : '';
 }
 
@@ -1826,7 +1831,7 @@ function countEnd() {
   if (role === 'local' && cfg.opp === 'cpu') ste('detail', winner === 0 ? 'beat-the-computer' : 'lost-to-the-computer');
   if (!skeet()) ste('value', 'level-reached', level);
 }
-function hidePanels() { $('#menu').hidden = true; $('#over').hidden = true; $('#wait').hidden = true; $('#records').hidden = true; $('#quick').hidden = true; $('#paused').hidden = true; }
+function hidePanels() { unpause(); $('#menu').hidden = true; $('#over').hidden = true; $('#wait').hidden = true; $('#records').hidden = true; $('#quick').hidden = true; $('#paused').hidden = true; }
 
 /* ---------------- drawing helpers ---------------- */
 function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
@@ -2239,20 +2244,27 @@ function draw() {
 let last = performance.now();
 // The next frame is always asked for first, so one bad frame can never freeze the game
 let loopErrors = 0;
-/* ---------------- pause (games on this phone only: online, one player can't freeze the other) ---------------- */
-let paused = false;
-const canPause = () => role === 'local' && (state === 'play' || state === 'ko') && players.length > 0;
+/* ---------------- pause ----------------
+   On this phone the game freezes. Online it can't (one player can't freeze the other), so the same screen
+   opens as a menu while the shoot carries on. On phones it also holds Sound and Leave. */
+let paused = false, menuOpen = false;
+const freezes = () => role === 'local';
 function pauseGame() {
-  if (paused || !canPause()) return;
-  paused = true; for (const p of players) p.hold = null;
-  if (AC && AC.state === 'running') AC.suspend().catch(() => {});
+  if (menuOpen || !players.length || !(state === 'play' || state === 'ko')) return;
+  menuOpen = true; for (const p of players) p.hold = null;
+  if (freezes()) { paused = true; if (AC && AC.state === 'running') AC.suspend().catch(() => {}); }
+  $('#paused .slain').textContent = freezes() ? 'Paused' : 'Menu';
+  $('#paused .how').textContent = freezes() ? 'The clays will wait, and so will the tea.' : 'The online shoot carries on while this is open.';
+  $('#pSound').textContent = muted ? 'Sound off' : 'Sound on';
   $('#paused').hidden = false; $('#hudBtns').hidden = true;
 }
+function unpause() {
+  if (paused) { paused = false; last = performance.now(); if (AC && AC.state === 'suspended') AC.resume().catch(() => {}); }
+  menuOpen = false;
+}
 function resumeGame() {
-  if (!paused) return;
-  paused = false; last = performance.now();
-  if (AC && AC.state === 'suspended') AC.resume().catch(() => {});
-  $('#paused').hidden = true; $('#hudBtns').hidden = false;
+  if (!menuOpen) return;
+  unpause(); $('#paused').hidden = true; $('#hudBtns').hidden = false;
 }
 function loop(now) {
   requestAnimationFrame(loop);
@@ -2360,7 +2372,7 @@ $('#againBtn').onclick = () => {
   else whenSideways(() => startMatch());
 };
 function toMenu() {
-  paused = false;
+  unpause();
   if (cfg.quick) { Object.assign(cfg, menuCfg || {}); cfg.quick = null; }
   netLeave();
   state = 'menu'; players = []; shots = []; volleys = []; parts = []; texts = []; targets = []; banner = null; butler.text = '';
@@ -2385,14 +2397,16 @@ $('#recBack').onclick = () => { hidePanels(); $(recordsBack === 'over' ? '#over'
 try { if (localStorage.getItem('clay-signed') === '1') { acctMsg(0, 'Opening the shooting book…'); fbAuth(0).then(() => { acctMsg(0, signedIn(0) ? 'Your career is being kept.' : ''); return afterSignIn(0); }).catch(e => { console.warn(e); acctMsg(0, ''); }); } } catch (_) {}
 $('#pauseBtn').onclick = pauseGame;
 $('#resumeBtn').onclick = resumeGame;
-$('#pauseLeave').onclick = () => { paused = false; toMenu(); };
+$('#pauseLeave').onclick = () => { unpause(); toMenu(); };
 // a phone call, or switching to another app, pauses the game by itself
-document.addEventListener('visibilitychange', () => { if (document.hidden) pauseGame(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden && freezes()) pauseGame(); });
 window.addEventListener('keydown', e => {
   if (e.target && e.target.tagName === 'INPUT') return;
-  if (e.code === 'KeyP' || e.code === 'Escape') { if (paused) resumeGame(); else pauseGame(); }
+  if (e.code === 'KeyP' || e.code === 'Escape') { if (menuOpen) resumeGame(); else pauseGame(); }
 });
-$('#muteBtn').onclick = () => { muted = !muted; $('#muteBtn').textContent = muted ? 'Sound off' : 'Sound on'; };
+function setMuted(m) { muted = m; $('#muteBtn').textContent = $('#pSound').textContent = muted ? 'Sound off' : 'Sound on'; }
+$('#muteBtn').onclick = () => setMuted(!muted);
+$('#pSound').onclick = () => setMuted(!muted);
 
 window.addEventListener('resize', resize);
 if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') window.__cd = { get: () => ({ state, turn, phase, targets, scores, broken, fired, players, level, SK, SF, sfInfo, tSum, tN, W, scale, offX, offY }), intercept, cfg, fire, isPaused: () => paused, pull: () => sfPull(), canPull, run: (sec, fn) => { for (let i = 0; i < sec * 60; i++) { update(1 / 60); if (fn) fn(); } } };
