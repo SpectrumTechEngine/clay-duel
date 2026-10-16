@@ -1,0 +1,10 @@
+{
+  "appId": "com.thespectrumtechengine.clayduel",
+  "appName": "Clay Duel",
+  "webDir": "www",
+  "backgroundColor": "#14180f",
+  "server": {
+    "url": "https://thespectrumtechengine.com/clay-duel/",
+    "errorPath": "index.html"
+  }
+}
