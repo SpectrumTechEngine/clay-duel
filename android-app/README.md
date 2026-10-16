@@ -1,6 +1,6 @@
 # Android app
 
-This folder turns Clay Duel: The King's Hunt into an Android APK. You don't need to touch it.
+This folder turns Clay Duel: The Grand Shoot into an Android APK. You don't need to touch it.
 
 - The app opens the live website at thespectrumtechengine.com/clay-duel/, so changes
   you push to the website show up in the app straight away.
