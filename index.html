@@ -169,7 +169,7 @@ input.locked{background:rgba(58,58,34,.12);border-style:dashed}
   .seg{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:6px;border:0;width:100%;justify-self:stretch}
   .seg button,.seg button+button{font-size:17px;padding:10px 6px;min-height:48px;min-width:0;border:2px solid #3a3a22}
   #terrSeg,#rdSeg{grid-template-columns:repeat(3,1fr)}
-  #gun1Seg,#gun2Seg,#qGunSeg{grid-template-columns:repeat(3,1fr)}
+  #gun1Seg,#gun2Seg,#qGunSeg,#cpuSeg{grid-template-columns:repeat(3,1fr)}
   #qEndSeg{grid-template-columns:repeat(2,1fr)} #qEndSeg button{max-width:none;padding:10px}
   .gunbox{width:100%} .gunNote{font-size:14px}
   .namebox{width:100%;gap:8px;font-size:18px;justify-self:stretch}
@@ -290,6 +290,8 @@ input.locked{background:rgba(58,58,34,.12);border-style:dashed}
         <div class="seg" id="setSeg"><button data-v="summer" aria-pressed="true">Summer</button><button data-v="autumn" aria-pressed="false">Autumn</button><button data-v="winter" aria-pressed="false">Winter</button></div>
         <span class="lbl">Opponent</span>
         <div class="seg" id="oppSeg"><button data-v="solo" aria-pressed="false">On my own</button><button data-v="local" aria-pressed="true">Same screen</button><button data-v="cpu" aria-pressed="false">Computer</button><button data-v="online" aria-pressed="false">Online</button></div>
+        <span class="lbl" id="cpuLbl" hidden>Your opponent</span>
+        <div class="gunbox" id="cpuBox" hidden><div class="seg" id="cpuSeg"><button data-v="percival" aria-pressed="false">Master Percival</button><button data-v="fortescue" aria-pressed="true">Lord Fortescue</button><button data-v="colonel" aria-pressed="false">The Colonel</button></div><small class="gunNote" id="cpuNote"></small></div>
       </div>
       <button class="big" id="startBtn">Take your place</button>
       <div class="online" id="onlineBox" hidden>
@@ -418,7 +420,7 @@ function countShoot(opp) {
   if (!skeet() && cfg.mode !== 'sfs') ste('detail', 'first-to-' + cfg.round);
 }
 /* ---------------- config / state ---------------- */
-const cfg = { mode: 'turn', round: 25, look: 'clay', diff: 'normal', terrain: 'lawn', setting: 'summer', opp: 'local', gun: ['light', 'light'], sfN: 20, sfSwap: 1, sfPair: 1, sfChal: 'acc' };
+const cfg = { cpu: 'fortescue', mode: 'turn', round: 25, look: 'clay', diff: 'normal', terrain: 'lawn', setting: 'summer', opp: 'local', gun: ['light', 'light'], sfN: 20, sfSwap: 1, sfPair: 1, sfChal: 'acc' };
 const skeet = () => cfg.round === 'skeet';
 const sfs = () => cfg.mode === 'sfs' && !skeet();
 let role = 'local';            // local | host | guest | spec
@@ -670,7 +672,7 @@ function nameFrom(full, fallback) {
 const myName = () => mkName(titleOf(0), $('#nameIn').value, $('#placeIn').value, 'Pemberton');
 const honor = i => (NAMES[i] && NAMES[i].title === 'Lady') ? "m'lady" : "m'lord";
 function saveNames() {
-  try { localStorage.setItem('clay-names', JSON.stringify({ n: $('#nameIn').value, p: $('#placeIn').value, n2: $('#name2In').value, p2: $('#place2In').value, t: titleOf(0), t2: titleOf(1), g: cfg.gun })); } catch (_) {}
+  try { localStorage.setItem('clay-names', JSON.stringify({ n: $('#nameIn').value, p: $('#placeIn').value, n2: $('#name2In').value, p2: $('#place2In').value, t: titleOf(0), t2: titleOf(1), g: cfg.gun, c: cfg.cpu })); } catch (_) {}
 }
 function loadNames() {
   try {
@@ -678,13 +680,29 @@ function loadNames() {
     $('#nameIn').value = s.n || ''; $('#placeIn').value = s.p || ''; $('#name2In').value = s.n2 || ''; $('#place2In').value = s.p2 || '';
     if (s.t) $('#ttl1').textContent = s.t === 'Lady' ? 'Lady' : 'Lord';
     if (s.t2) $('#ttl2').textContent = s.t2 === 'Lady' ? 'Lady' : 'Lord';
+    if (CPU[s.c]) { cfg.cpu = s.c; $('#cpuSeg').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === s.c)); }
     if (Array.isArray(s.g)) s.g.slice(0, 2).forEach((g, i) => { if (GUN[g]) { cfg.gun[i] = g; $(`#gun${i + 1}Seg [data-v="${g}"]`).click(); } });
   } catch (_) {}
 }
 // names for a round on this phone (same screen, or against the computer)
+// the computer opponents, from beginner to crack shot. In speed games (open shoot, the speed challenge) the weaker ones are
+// slower to fire; in accuracy games they aim worse. The Colonel shoots exactly as the computer always did.
+const CPU = {
+  percival:  { name: 'Master Percival', short: 'Percival', gun: 'blunder', react: [1.2, 2.1], aim: 6, look: 'cap', skipGold: .5,
+    note: 'The nephew home from school. Slow to react and a shaky aim. He breaks about 4 in 10.',
+    hello: "Master Percival has borrowed his uncle's blunderbuss, {h}. Do stand well back." },
+  fortescue: { name: 'Lord Fortescue', short: 'Fortescue', gun: 'light', react: [.75, 1.0], aim: 1.8, look: 'tophat', skipGold: 0,
+    note: 'Your host. A fair shot, and a fair match. He breaks about 6 in 10.',
+    hello: 'Lord Fortescue takes his place, {h}. A fair shot, I am told.' },
+  colonel:   { name: 'The Colonel', short: 'Colonel', gun: 'choke', react: [.55, .55], aim: 1, look: 'mil', skipGold: 0,
+    note: 'Retired from the army, and has never missed a shoot. As sharp and quick as they come.',
+    hello: 'The Colonel takes his place, {h}. He has never missed a shoot in forty years.' },
+};
+const cpuProf = () => CPU[cfg.cpu] || CPU.fortescue;
+function cpuNote() { $('#cpuNote').textContent = cpuProf().note; }
 function readNames() {
   NAMES[0] = myName();
-  NAMES[1] = cfg.opp === 'cpu' ? { full: 'Lord Fortescue', short: 'Fortescue', title: 'Lord' } : mkName(titleOf(1), $('#name2In').value, $('#place2In').value, 'Whitlock');
+  NAMES[1] = cfg.opp === 'cpu' ? { full: cpuProf().name, short: cpuProf().short, title: 'Lord' } : mkName(titleOf(1), $('#name2In').value, $('#place2In').value, 'Whitlock');
   saveNames();
 }
 const restAim = p => p.facing > 0 ? .95 : Math.PI - .95;   // gun pointed safely at the grass
@@ -794,7 +812,7 @@ function startMatch() {
   seed = Math.floor(Math.random() * 1e6) + 1;
   buildLevel();
   players = solo() ? [mkPlayer(0)] : [mkPlayer(0), mkPlayer(1)];
-  if (cpuOn()) players[1].gun = pick(['choke', 'light', 'improved', 'heavy']);
+  if (cpuOn()) players[1].gun = cpuProf().gun;
   shots = []; volleys = []; parts = []; texts = []; targets = []; bags = [[], []];
   scores[0] = scores[1] = 0; broken[0] = broken[1] = 0; fired[0] = fired[1] = 0; tSum[0] = tSum[1] = 0; tN[0] = tN[1] = 0;
   level = 1; levelKills = 0; spawnT = 2.4;
@@ -812,7 +830,7 @@ function startMatch() {
   countShoot(role === 'host' ? 'online' : cfg.opp === 'cpu' ? 'computer' : solo() ? 'solo' : 'same-screen');
   const next = SK ? 'Station I: ' + NAMES[turn].full : SF ? (cfg.quick ? (hitMode() ? `Hit ${SF.n} clays, as fast as you can` : `${SF.n} clays: hit as many as you can`) : 'Shot for shot: ' + NAMES[turn].full + ' to shoot') : cfg.mode === 'live' || solo() ? 'Level I: a single clay' : NAMES[turn].full + ' to shoot';
   showBanner('The shoot begins', 1.2, () => showBanner(next, 1.3));
-  say('start', turn, true);
+  if (cpuOn()) emitFx({ k: 'say', t: cpuProf().hello.replace(/\{h\}/g, honor(0)) }); else say('start', turn, true);
   hidePanels(); $('#hudBtns').hidden = false; updateNetTag();
 }
 function showBanner(text, life, then, big) { emitFx({ k: 'ban', t: text, l: life, b: big ? 1 : 0 }); if (banner) banner.then = then || null; }
@@ -1113,16 +1131,19 @@ function cpuUpdate(dt) {
     if (cpuS.dodgeT <= 0) { cpuS.dodgeT = rand(1.5, 3.5); cpuS.tx = rand(me.minX, me.maxX); }
     const d = cpuS.tx - me.x; if (Math.abs(d) > 3) { me.x += Math.sign(d) * Math.min(Math.abs(d), 100 * dt); me.walk += dt * 9; }
   }
-  const ts = targets.filter(b => b.age > .55 && b.x > 60 && b.x < W - 60 && b.y > 60 && b.y < GB - 25 && b.t !== 'gold' || (b.t === 'gold' && b.x > 200 && b.x < W - 200));
+  const P = cpuProf(), speedGame = (cfg.mode === 'live' && !skeet()) || (sfs() && cfg.sfChal === 'speed');
+  // each clay gets its own reaction time; a weaker shot reacts slower only where speed decides the game
+  for (const b of targets) if (b.cpuR === undefined) { b.cpuR = speedGame ? rand(P.react[0], P.react[1]) * (Math.random() < .15 ? 1.5 : 1) : .55; b.cpuSkip = b.t === 'gold' && Math.random() < P.skipGold; }
+  const ts = targets.filter(b => !b.cpuSkip && b.age > b.cpuR && (b.x > 60 && b.x < W - 60 && b.y > 60 && b.y < GB - 25 && b.t !== 'gold' || (b.t === 'gold' && b.x > 200 && b.x < W - 200)));
   if (ts.length) { const b = ts[0], s = shoulder(me); me.facing = b.x >= me.x ? 1 : -1; me.aim += (Math.atan2(b.y - s.y, b.x - s.x) - me.aim) * Math.min(1, dt * 6); }
   cpuS.wait -= dt;
   if (!canFire(me) || cpuS.wait > 0 || !ts.length) return;
   let tb = ts[0], bs = -1e9;
   for (const b of ts) { const s = TT[b.t].pts / TT[b.t].r * 10 + Math.random() * 2; if (s > bs) { bs = s; tb = b; } }
   const sol = intercept(me, tb); if (!sol) return;
-  const err = (tb.t === 'gold' ? 220 : 150) * 1.2 * (Math.random() < .2 ? 1.8 : 1);
+  const err = (tb.t === 'gold' ? 220 : 150) * 1.2 * (Math.random() < .2 ? 1.8 : 1) * (speedGame ? 1 : P.aim);
   fire(me, sol.x + gauss() * err, sol.y + gauss() * err);
-  cpuS.wait = cfg.mode === 'live' && !skeet() ? rand(.5, 1.2) : rand(.3, .55);
+  cpuS.wait = (cfg.mode === 'live' && !skeet() ? rand(.5, 1.2) : rand(.3, .55)) * (speedGame ? P.react[0] / .55 : 1);
 }
 
 /* ---------------- input ---------------- */
@@ -1391,6 +1412,7 @@ async function recordCareer() {
         add('clays', broken[pid]); add('shots', fired[pid]); add('points', scores[pid]); add('gold', f.gold); add('braces', f.brace); add('twoOne', f.two);
         c.bestRun = Math.max(c.bestRun || 0, f.run);
         add('tSum', +tSum[pid].toFixed(3)); add('tN', tN[pid]);
+        if (mode === 'cpu') { c.vs = c.vs || {}; const v = c.vs[cfg.cpu] || { p: 0, w: 0 }; v.p++; if (won) v.w++; c.vs[cfg.cpu] = v; }
         if (tN[pid] >= 5) c.bestAvg = Math.min(c.bestAvg || 99, +(tSum[pid] / tN[pid]).toFixed(3));
         if (skeet()) c.bestSkeet = Math.max(c.bestSkeet || 0, Math.min(25, broken[pid]));
         c.updated = Date.now();
@@ -1409,6 +1431,7 @@ function careerCard(c, who) {
   if (hs.solo) rows.push([MODE_NAME.solo, `${num(hs.solo.p)} rounds`]);
   const acc = num(c.shots) ? ` (${Math.round(num(c.clays) / num(c.shots) * 100)}% of shots)` : '';
   rows.push(['Clays broken', num(c.clays) + acc], ['Points', num(c.points)], ['Golden clays', num(c.gold)], ['Best skeet round', `${num(c.bestSkeet)} of 25`],
+    ...(c.vs ? [['Beaten the computer', ['percival', 'fortescue', 'colonel'].map(k => `${CPU[k].short} ${num((c.vs[k] || {}).w)}`).join(', ')]] : []),
     ['Average speed of shot', num(c.tN) ? (num(c.tSum) / num(c.tN)).toFixed(2) + ' s' : 'none yet'], ['Best round average', num(c.bestAvg) ? num(c.bestAvg).toFixed(2) + ' s' : 'none yet'],
     ['Longest run of breaks', num(c.bestRun)], ['Doubles taken', num(c.braces)], ['Two with one shot', num(c.twoOne)]);
   const t = document.createElement('dl');
@@ -1828,7 +1851,7 @@ function countEnd() {
     if (feats[i].two) ste('detail', 'two-with-one-shot');
     ste('detail', 'gun-' + (players[i] ? players[i].gun : 'light'));
   }
-  if (role === 'local' && cfg.opp === 'cpu') ste('detail', winner === 0 ? 'beat-the-computer' : 'lost-to-the-computer');
+  if (role === 'local' && cfg.opp === 'cpu') ste('detail', (winner === 0 ? 'beat-' : 'lost-to-') + cfg.cpu);
   if (!skeet()) ste('value', 'level-reached', level);
 }
 function hidePanels() { unpause(); $('#menu').hidden = true; $('#over').hidden = true; $('#wait').hidden = true; $('#records').hidden = true; $('#quick').hidden = true; $('#paused').hidden = true; }
@@ -2022,8 +2045,16 @@ function drawShooter(p) {
     ell(0, -196, 26, 6); fill(S.hat === '#2a2622' ? '#2a2622' : '#3a3424'); rr(ctx, -11, -212, 22, 16, 5); fill(S.dress);
     ctx.strokeStyle = S.trim; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-f * 8, -206); ctx.quadraticCurveTo(-f * 26, -230, -f * 34, -214); ctx.stroke();
   } else {
-    line(f * 2, -178, f * 12, -178, 3, S.hair); // moustache
-    if (p.id === 0) { ell(0, -194, 18, 5); fill(S.hat); rr(ctx, -12, -210, 24, 17, 7); fill(S.hat); ell(-f * 16, -194, 8, 3); fill(S.hat); } // deerstalker
+    const look = cpuOn() && p.id === 1 ? cpuProf().look : null;
+    if (look === 'cap') { ell(f * 2, -196, 15, 5); fill('#2a3a6a'); rr(ctx, -12, -206, 24, 12, 6); fill('#2a3a6a'); ell(f * 14, -194, 9, 3); fill('#1a2448'); ctx.fillStyle = '#c8a050'; ctx.fillRect(-12, -199, 24, 2); } // a school cap, no moustache yet
+    else if (look === 'mil') { // the Colonel: a peaked cap and a magnificent moustache
+      line(-f * 4, -177, f * 16, -175, 5, '#d8d0c4'); ell(-f * 10, -180, 4, 7); fill('#d8d0c4');
+      rr(ctx, -13, -212, 26, 16, 4); fill('#1d2438'); ctx.fillStyle = '#c8a050'; ctx.fillRect(-13, -200, 26, 3); ell(f * 12, -196, 11, 3); fill('#0e1220');
+    }
+    const ownHat = look === 'cap' || look === 'mil';
+    if (!ownHat) line(f * 2, -178, f * 12, -178, 3, S.hair); // moustache
+    if (ownHat) { /* hat drawn above */ }
+    else if (p.id === 0) { ell(0, -194, 18, 5); fill(S.hat); rr(ctx, -12, -210, 24, 17, 7); fill(S.hat); ell(-f * 16, -194, 8, 3); fill(S.hat); } // deerstalker
     else { ell(0, -195, 19, 4); fill(S.hat); ctx.fillStyle = S.hat; ctx.fillRect(-11, -222, 22, 27); ctx.fillStyle = '#6a2430'; ctx.fillRect(-11, -201, 22, 4); } // top hat
   }
   ctx.restore();
@@ -2281,7 +2312,7 @@ function seg(id, cb) {
 function previewLevel() { if (state !== 'menu') return; seed = 11; buildLevel(); }
 seg('#gun1Seg', v => { cfg.gun[0] = gunOk(v); gunNotes(); saveNames(); });
 seg('#gun2Seg', v => { cfg.gun[1] = gunOk(v); gunNotes(); saveNames(); });
-loadNames(); gunNotes();
+loadNames(); gunNotes(); cpuNote();
 for (const id of ['#nameIn', '#placeIn', '#name2In', '#place2In']) $(id).addEventListener('change', saveNames);
 for (const i of [1, 2]) $('#ttl' + i).onclick = () => { const b = $('#ttl' + i); b.textContent = b.textContent === 'Lady' ? 'Lord' : 'Lady'; sfx.tick(); saveNames(); };
 // a skeet round is always shot in turns; shot for shot sets its own length, so it has its own settings instead of "The round"
@@ -2295,6 +2326,7 @@ function syncRules() {
 }
 seg('#rdSeg', v => { cfg.round = v === 'skeet' ? 'skeet' : +v; syncRules(); previewLevel(); });
 seg('#modeSeg', v => { cfg.mode = v; syncRules(); });
+seg('#cpuSeg', v => { cfg.cpu = CPU[v] ? v : 'fortescue'; cpuNote(); saveNames(); });
 seg('#diffSeg', v => { cfg.diff = DIFF[v] ? v : 'normal'; });
 seg('#sfNSeg', v => { cfg.sfN = +v; });
 seg('#sfSwapSeg', v => { cfg.sfSwap = +v; });
@@ -2306,6 +2338,7 @@ seg('#setSeg', v => { cfg.setting = v; previewLevel(); });
 seg('#oppSeg', v => {
   cfg.opp = v; const on = v === 'online'; previewLevel();
   for (const id of ['#name2Lbl', '#name2Box', '#gun2Lbl', '#gun2Box', '#acct2Lbl', '#acct2']) $(id).hidden = v !== 'local';
+  $('#cpuLbl').hidden = $('#cpuBox').hidden = v !== 'cpu';
   $('#onlineBox').hidden = !on; $('#howTxt').hidden = on;
   $('#startBtn').textContent = on ? 'Open a challenge' : 'Take your place';
   $('#startBtn').disabled = on && !NET.lobby;
