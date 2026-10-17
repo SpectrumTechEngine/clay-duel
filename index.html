@@ -807,7 +807,38 @@ function sfFinish() {
   else w = broken[0] !== broken[1] ? (broken[0] > broken[1] ? 0 : 1) : fired[0] !== fired[1] ? (fired[0] < fired[1] ? 0 : 1) : (sfSpeed(0) <= sfSpeed(1) ? 0 : 1);
   winShoot(w);
 }
+/* ---- X: the shooter runs over to the other player and shoots them, which ends the game ---- */
+let EX = null;   // { a: attacker id, v: victim id, t, fired }
+const canX = () => state === 'play' && players.length === 2 && introT <= 0;
+function startExec(a) {
+  if (!canX() || !authority()) return;
+  const v = 1 - a;
+  EX = { a, v, t: 0, fired: false }; state = 'exec';
+  targets = []; shots = [];
+  for (const p of players) { p.hold = null; p.tx = null; }
+  emitFx({ k: 'ban', t: NAMES[a].short + ' has had quite enough', l: 1.4, b: 0 });
+}
+function updateExec(dt) {
+  const A = players[EX.a], V = players[EX.v], dir = V.x > A.x ? 1 : -1, stopAt = V.x - dir * 120;
+  EX.t += dt;
+  const head = { x: V.x, y: GB - 184 * CS };
+  if (!EX.fired) {
+    const d = stopAt - A.x;
+    if (Math.abs(d) > 4) { A.x += Math.sign(d) * Math.min(Math.abs(d), 900 * dt); A.walk += dt * 18; A.aim = dir > 0 ? .3 : Math.PI - .3; }
+    else {
+      const s = shoulder(A); A.aim = Math.atan2(head.y - s.y, head.x - s.x);
+      if (!EX.aimAt) EX.aimAt = EX.t;
+      if (EX.t - EX.aimAt > .35) {
+        EX.fired = true; EX.firedAt = EX.t;
+        const m = muzzleAt(A, A.aim);
+        emitFx({ k: 'shot', p: A.id, x: Math.round(m.x), y: Math.round(m.y), a: +A.aim.toFixed(3), g: GKEYS.indexOf(A.gun) });
+        emitFx({ k: 'headshot', p: V.id, x: Math.round(head.x), y: Math.round(head.y), a: A.id });
+      }
+    }
+  } else if (EX.t - EX.firedAt > 2.6) { state = 'over'; endScreen(); }
+}
 function startMatch() {
+  EX = null;
   unpause();
   seed = Math.floor(Math.random() * 1e6) + 1;
   buildLevel();
@@ -1106,6 +1137,16 @@ function fx(e) {
     case 'gold': sfx.chime(); popText(W / 2, H / 2 + 80, `A ${goldWord().toUpperCase()}! Worth ${skeet() ? 5 : 20} points`, '#ffd36a'); break;
     case 'land': sfx.thud(); for (let i = 0; i < 5; i++) parts.push({ k: 'dust', x: num(e.x) + rand(-10, 10), y: GB - 4, vx: rand(-40, 40), vy: rand(-40, -10), life: .8, t: 0, r: rand(6, 10), c: cfg.setting === 'winter' ? 'rgba(240,244,248,' : 'rgba(110,96,70,' }); break;
     case 'dirt': sfx.dirt(); chips(num(e.x), GB - 2, 9, cfg.setting === 'winter' ? ['#f2f5f7', '#cfd8de'] : ['#5a4a32', '#3f3424', '#6a8a3a'], 180); break;
+    case 'headshot': { // the other player is shot and drops
+      const v = players[e.p], x = num(e.x), y = num(e.y);
+      if (v) { v.dead = true; v.fallK = 0; }
+      sfx.shriek(); ladiesReact('duck'); flyingCup(); shake = Math.max(shake, 12);
+      for (let i = 0; i < 12; i++) parts.push({ k: 'smoke', x: x + rand(-10, 10), y: y + rand(-10, 10), vx: rand(-60, 60), vy: rand(-80, 10), life: rand(1, 1.8), t: 0, r: rand(8, 14), c: 'rgba(60,56,50,' });
+      chips(x, y, 10, ['#3a3424', '#1d1712', '#5a1a22'], 260);
+      const a = num(e.a) ? 1 : 0;
+      butler = { text: `Good heavens! ${NAMES[a].full} has shot ${NAMES[1 - a].full}! The shoot is most certainly over.`, t: 0, life: 4 };
+      break;
+    }
     case 'stray': sfx.shriek(); ladiesReact('duck'); chips(num(e.x), num(e.y), 10, ['#ffffff', '#e8e0d0', '#a8c8e0']); flyingCup(); break;
   }
 }
@@ -1219,7 +1260,7 @@ function moveDir(p) {
 }
 
 /* ---------------- online (room capability) ---------------- */
-const NET = { lobby: null, room: null, user: null, code: '', myPeer: '', hostPeer: '', guestPeer: '', fireSeq: 0, fv: null, re: 0, lastF: 0, lastRe: 0, pendingUntil: 0, pullSeq: 0, lastPl: 0,
+const NET = { lobby: null, room: null, user: null, code: '', myPeer: '', hostPeer: '', guestPeer: '', fireSeq: 0, fv: null, re: 0, lastF: 0, lastRe: 0, pendingUntil: 0, pullSeq: 0, lastPl: 0, xSeq: 0, lastX: 0,
   lastSnap: null, snapAt: 0, lastEvt: -1, pubAt: 0, hostGoneAt: 0, joinAt: 0, unsub: null, names: {} };
 /* ---- Online duels on the website ----
    Inside Claude the game uses Claude's own "room" service. Everywhere else the same
@@ -1556,7 +1597,7 @@ function hostPeers(peers) {
       NAMES[1] = nameFrom(c.presence.nm, 'Whitlock'); CAREER.uid[1] = cleanTxt(c.presence.cu, 40);
       cfg.gun[1] = gunOk(c.presence.gn);
       const inp = c.presence.in || {};
-      NET.lastF = num(inp.f, 0); NET.lastRe = num(inp.re, 0); NET.lastPl = num(inp.pl, 0);
+      NET.lastF = num(inp.f, 0); NET.lastRe = num(inp.re, 0); NET.lastPl = num(inp.pl, 0); NET.lastX = num(inp.xs, 0);
       NET.room.presence({ guest: c.peer }).catch(() => {});
       NET.lobby.presence({ open: null, cfg: null }).catch(() => {});
       startMatch();
@@ -1569,7 +1610,7 @@ async function joinDuel(code) {
   if (code.length !== 4) { $('#onlineNote').textContent = 'A challenge code has four digits.'; return; }
   try { NET.room = await NET.lobby.join(ROOM + code); }
   catch (e) { $('#onlineNote').textContent = 'That duel could not be joined. Check the code and try again.'; return; }
-  role = 'spec'; NET.code = code; NET.hostPeer = ''; NET.fireSeq = 0; NET.pullSeq = 0; NET.fv = null; NET.re = 0; NET.lastEvt = -1; NET.lastSnap = null; NET.joinAt = performance.now(); NET.hostGoneAt = 0;
+  role = 'spec'; NET.code = code; NET.hostPeer = ''; NET.fireSeq = 0; NET.pullSeq = 0; NET.xSeq = 0; NET.fv = null; NET.re = 0; NET.lastEvt = -1; NET.lastSnap = null; NET.joinAt = performance.now(); NET.hostGoneAt = 0;
   NET.myPeer = myPeerIn(NET.room);
   NAMES[1] = myName(); saveNames();
   CAREER.uid = ['', (signedIn(0) || {}).uid || ''];
@@ -1594,6 +1635,7 @@ function hostPublish() {
     nm: [NAMES[0].full, NAMES[1].full], gn: [players[0] ? players[0].gun : 'light', players[1] ? players[1].gun : 'light'],
     w: Math.round(wind), tn: turn, ph: PHASES.indexOf(phase), it: +Math.max(0, introT).toFixed(2), wn: [wins[0], wins[1]], wr: winner, mn: matchNo,
     sc: [scores[0], scores[1]], bk: [broken[0], broken[1]], fi: [fired[0], fired[1]], lv: level, lks: levelKills,
+    xe: EX ? [EX.a, EX.v] : 0,
     sk: [skInfo.st, skInfo.lab, skInfo.done[0], skInfo.done[1]],
     sf: [sfInfo.done[0], sfInfo.done[1], cfg.sfN, cfg.sfSwap, cfg.sfPair, cfg.sfChal === 'speed' ? 1 : 0, sfInfo.pull], ts: [+tSum[0].toFixed(3), tN[0], +tSum[1].toFixed(3), tN[1]],
     p: players.map(p => [Math.round(p.x), +p.aim.toFixed(3), p.shells, +p.reloadT.toFixed(2), +p.cool.toFixed(2)]),
@@ -1613,6 +1655,8 @@ function hostReadGuest() {
     NET.lastF = f;
     if (Array.isArray(inp.fv) && canFire(p)) fire(p, clamp(num(inp.fv[0]), -500, W + 500), clamp(num(inp.fv[1]), -300, H));
   }
+  const xs = num(inp.xs, 0);
+  if (xs > NET.lastX) { NET.lastX = xs; startExec(1); }
   const pl = num(inp.pl, 0);
   if (pl > NET.lastPl) { NET.lastPl = pl; if (canPull(1)) sfPull(); }
   const re = num(inp.re, 0);
@@ -1622,7 +1666,7 @@ function hostReadGuest() {
 function guestPublish(force) {
   const now = performance.now(); if (!force && now - NET.pubAt < 45) return; NET.pubAt = now;
   const p = players[1]; if (!p) return;
-  NET.room.presence({ in: { x: Math.round(p.x), f: NET.fireSeq, fv: NET.fv, re: NET.re, pl: NET.pullSeq } }).catch(() => {});
+  NET.room.presence({ in: { x: Math.round(p.x), f: NET.fireSeq, fv: NET.fv, re: NET.re, pl: NET.pullSeq, xs: NET.xSeq } }).catch(() => {});
 }
 function guestSync() {
   const peers = NET.room.peers();
@@ -1662,7 +1706,8 @@ function applySnap(s, prev) {
   players.forEach((p, i) => { p.gun = cfg.gun[i]; });
   if (Array.isArray(s.nm)) { NAMES[0] = nameFrom(s.nm[0], 'Pemberton'); if (role !== 'guest') NAMES[1] = nameFrom(s.nm[1], 'Whitlock'); }
   const prevState = state;
-  state = ['play', 'ko', 'over'].includes(s.st) ? s.st : state;
+  state = ['play', 'ko', 'over', 'exec'].includes(s.st) ? s.st : state;
+  EX = Array.isArray(s.xe) ? { a: s.xe[0] ? 1 : 0, v: s.xe[0] ? 0 : 1 } : null;
   wind = num(s.w); turn = s.tn ? 1 : 0; phase = PHASES[num(s.ph) | 0] || 'ready'; introT = num(s.it); gameT = num(s.gt);
   if (Array.isArray(s.wn)) { wins[0] = num(s.wn[0]) | 0; wins[1] = num(s.wn[1]) | 0; }
   if (Array.isArray(s.sc)) { scores[0] = num(s.sc[0]) | 0; scores[1] = num(s.sc[1]) | 0; }
@@ -1768,7 +1813,8 @@ function update(rdt) {
       const d = moveDir(p);
       if (d) { const ox = p.x; p.x = clamp(p.x + d * (solo() ? 320 : 105) * dt, p.minX, p.maxX); if (p.x !== ox) { p.walk += dt * 9; if (Math.floor(p.walk / Math.PI) !== Math.floor((p.walk - dt * 9) / Math.PI)) sfx.step(); } }
     }
-    if (!skeet()) p.x = clamp(p.x, p.minX, p.maxX);
+    if (!skeet() && state !== 'exec') p.x = clamp(p.x, p.minX, p.maxX);
+    if (p.dead) p.fallK = Math.min(1, (p.fallK || 0) + dt * 3);
     // a local shooter on a computer follows the mouse with the gun
     const ready = players.filter(q => localControl(q) && canFire(q));
     if (hover && ready.includes(p) && (ready.length === 1 || (hover.x < CX) === (p.id === 0))) {
@@ -1784,6 +1830,7 @@ function update(rdt) {
   for (const t of texts) t.t += dt;
   texts = texts.filter(t => t.t < t.life);
 
+  if (authority() && state === 'exec' && EX) updateExec(dt);
   if (authority() && state === 'ko') { koT += rdt; if (koT > 3.2) { state = 'over'; endScreen(); } }
   if (role === 'host' && NET.room) hostPublish();
   if (role === 'guest' && NET.room) guestPublish(false);
@@ -1815,7 +1862,7 @@ function updateParts(dt) {
 const mmss = t => Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0');
 function endScreen() {
   const l = 1 - winner, a = NAMES[0].short, b = NAMES[1].short;
-  $('#over .slain').textContent = solo() ? 'The round is done' : 'The day is won';
+  $('#over .slain').textContent = EX ? 'The shoot is over' : solo() ? 'The round is done' : 'The day is won';
   const sfm = cfg.mode === 'sfs' && !skeet(), n = cfg.sfN;
   if (solo()) {
     const pc = fired[0] ? Math.min(100, Math.round(broken[0] / fired[0] * 100)) : 0;
@@ -1835,7 +1882,10 @@ function endScreen() {
   $('#overNote').textContent = role === 'host' || role === 'guest' ? 'Either of you may call the next round.' : role === 'spec' ? 'You are watching this shoot.' : '';
   hidePanels(); $('#over').hidden = false; $('#hudBtns').hidden = true;
   try { $('#recordsBtn').hidden = !roundRecords().length; } catch (e) { console.error(e); $('#recordsBtn').hidden = true; }
-  try { recordCareer().catch(e => console.error(e)); } catch (e) { console.error(e); }
+  if (EX) {
+    const a = EX.a, v = EX.v;
+    $('#verdict').textContent = `${NAMES[a].full} ran across the field and shot ${NAMES[v].full}. Nobody wins this one.`;
+  } else try { recordCareer().catch(e => console.error(e)); } catch (e) { console.error(e); }
   try { countEnd(); } catch (e) { console.error(e); }
   if (authority()) matchNo++;
   setTimeout(() => { if (!again.hidden) again.focus(); }, 50);
@@ -2017,9 +2067,11 @@ function drawTarget(b) {
   ell(b.x, b.y, r, r * tilt, rot); fill(gold ? '#f2c64a' : zip ? '#c8402a' : '#e2712c', 'rgba(29,23,18,.8)', 1.5);
   ell(b.x, b.y - r * tilt * .2, r * .55, r * tilt * .45, rot); fill(gold ? '#fff0b0' : zip ? '#f4e8d8' : '#f09a50');
 }
+const smoothK = t => t * t * (3 - 2 * t);
 function drawShooter(p) {
   const S = p.S, lady = NAMES[p.id] && NAMES[p.id].title === 'Lady', f = p.facing, step = Math.sin(p.walk) * 6;
   ctx.save(); ctx.translate(p.x, GB); ctx.scale(CS, CS); ctx.transform(1, 0, -f * p.kick * p.kick * .07, 1, 0, 0);
+  if (p.dead) ctx.rotate(-f * smoothK(p.fallK || 0) * Math.PI / 2);
   ell(0, 3, 34, 7); fill('rgba(0,0,0,.25)');
   if (lady) {
     ctx.beginPath(); ctx.moveTo(-15, -98); ctx.quadraticCurveTo(-28, -40, -36 - step * .3, 0); ctx.lineTo(36 + step * .3, 0); ctx.quadraticCurveTo(28, -40, 15, -98); ctx.closePath(); fill(S.dress, 'rgba(0,0,0,.35)', 1.5);
@@ -2058,6 +2110,7 @@ function drawShooter(p) {
     else { ell(0, -195, 19, 4); fill(S.hat); ctx.fillStyle = S.hat; ctx.fillRect(-11, -222, 22, 27); ctx.fillStyle = '#6a2430'; ctx.fillRect(-11, -201, 22, 4); } // top hat
   }
   ctx.restore();
+  if (p.dead) return;
   // the gun, held at the shoulder and pointed along p.aim; it kicks back when fired
   const sh = shoulder(p), k = p.kick;
   ctx.save(); ctx.translate(sh.x, sh.y); ctx.rotate(p.aim + (Math.cos(p.aim) >= 0 ? -1 : 1) * k * k * .3); ctx.scale(CS, CS * (Math.cos(p.aim) >= 0 ? 1 : -1));
@@ -2436,6 +2489,10 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && fre
 window.addEventListener('keydown', e => {
   if (e.target && e.target.tagName === 'INPUT') return;
   if (e.code === 'KeyP' || e.code === 'Escape') { if (menuOpen) resumeGame(); else pauseGame(); }
+  if (e.code === 'KeyX' && !e.repeat && !menuOpen && canX()) {
+    if (role === 'guest') { NET.xSeq++; guestPublish(true); }
+    else if (role === 'local' || role === 'host') startExec(0);
+  }
 });
 function setMuted(m) { muted = m; $('#muteBtn').textContent = $('#pSound').textContent = muted ? 'Sound off' : 'Sound on'; }
 $('#muteBtn').onclick = () => setMuted(!muted);
