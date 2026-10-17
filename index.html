@@ -2128,6 +2128,14 @@ function drawShooter(p) {
     const a = Math.min(1, p.pullT / .2);
     ctx.globalAlpha = a; text('Pull!', p.x + f * 40, GB - 272 * CS, `italic 700 60px ${DISPLAY}`, '#fff8e6'); ctx.globalAlpha = 1;
   }
+  // the X ending: the attacker shouts the other player's name as he charges
+  if (state === 'exec' && EX && EX.a === p.id && players[EX.v] && !players[EX.v].dead) {
+    const msg = 'DIE, ' + NAMES[EX.v].short.toUpperCase() + '!';
+    ctx.font = `900 64px ${DISPLAY}`; const w = ctx.measureText(msg).width + 50, bx = clamp(p.x - w / 2, XL + 10, XR - w - 10), by = GB - 400 * CS;
+    rr(ctx, bx, by, w, 96, 18); fill('#fffdf6', '#2a1a12', 4);
+    ctx.beginPath(); ctx.moveTo(p.x - 14, by + 94); ctx.lineTo(p.x + 14, by + 94); ctx.lineTo(p.x + f * 6, by + 140); ctx.closePath(); fill('#fffdf6');
+    text(msg, bx + w / 2, by + 50, `900 64px ${DISPLAY}`, '#8a1010', 'center', false);
+  }
 }
 // the ladies' tea table, with three ladies who react to the shooting
 function drawLady(i) {
