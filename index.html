@@ -1244,7 +1244,7 @@ cvs.addEventListener('pointerleave', () => { hover = null; });
 function release(e) { for (const p of players) if (p.hold && p.hold.id === e.pointerId) p.hold = null; }
 cvs.addEventListener('pointerup', release);
 cvs.addEventListener('pointercancel', release);
-window.addEventListener('keydown', e => { if (e.target && e.target.tagName === 'INPUT') return; keys[e.code] = true; if (e.code === 'Space' && state === 'play') {
+window.addEventListener('keydown', e => { if (e.target && e.target.tagName === 'INPUT' && e.target.offsetParent) return; keys[e.code] = true; if (e.code === 'Space' && state === 'play') {
     // on a computer the space bar shoots at the crosshair; when there's nothing to shoot, it pulls (shot for shot)
     e.preventDefault(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     if (!e.repeat && !(hover && players.some(p => localControl(p) && canFire(p)) && shootAt(hover)) && pullBtn()) doPull();
@@ -1720,7 +1720,7 @@ function applySnap(s, prev) {
     const p = players[i]; if (!Array.isArray(d)) return;
     const mine = role === 'guest' && i === 1;
     const nx = num(d[0], p.x);
-    if (!mine || skeet()) { if (Math.abs(nx - p.x) > .5) p.walk += .15; p.x = nx; }
+    if (!mine || skeet() || state === 'exec') { if (Math.abs(nx - p.x) > .5) p.walk += .15; p.x = nx; }
     p.aim = num(d[1], p.aim); p.facing = Math.cos(p.aim) >= 0 ? 1 : -1;
     p.shells = clamp(num(d[2]) | 0, 0, 2); p.reloadT = num(d[3]); p.cool = num(d[4]);
   });
@@ -1813,7 +1813,7 @@ function update(rdt) {
       const d = moveDir(p);
       if (d) { const ox = p.x; p.x = clamp(p.x + d * (solo() ? 320 : 105) * dt, p.minX, p.maxX); if (p.x !== ox) { p.walk += dt * 9; if (Math.floor(p.walk / Math.PI) !== Math.floor((p.walk - dt * 9) / Math.PI)) sfx.step(); } }
     }
-    if (!skeet() && state !== 'exec') p.x = clamp(p.x, p.minX, p.maxX);
+    if (!skeet() && state === 'play') p.x = clamp(p.x, p.minX, p.maxX);
     if (p.dead) p.fallK = Math.min(1, (p.fallK || 0) + dt * 3);
     // a local shooter on a computer follows the mouse with the gun
     const ready = players.filter(q => localControl(q) && canFire(q));
@@ -1904,7 +1904,7 @@ function countEnd() {
   if (role === 'local' && cfg.opp === 'cpu') ste('detail', (winner === 0 ? 'beat-' : 'lost-to-') + cfg.cpu);
   if (!skeet()) ste('value', 'level-reached', level);
 }
-function hidePanels() { unpause(); $('#menu').hidden = true; $('#over').hidden = true; $('#wait').hidden = true; $('#records').hidden = true; $('#quick').hidden = true; $('#paused').hidden = true; }
+function hidePanels() { unpause(); if (document.activeElement && document.activeElement !== document.body && document.activeElement.blur) document.activeElement.blur(); $('#menu').hidden = true; $('#over').hidden = true; $('#wait').hidden = true; $('#records').hidden = true; $('#quick').hidden = true; $('#paused').hidden = true; }
 
 /* ---------------- drawing helpers ---------------- */
 function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
@@ -2487,7 +2487,7 @@ $('#pauseLeave').onclick = () => { unpause(); toMenu(); };
 // a phone call, or switching to another app, pauses the game by itself
 document.addEventListener('visibilitychange', () => { if (document.hidden && freezes()) pauseGame(); });
 window.addEventListener('keydown', e => {
-  if (e.target && e.target.tagName === 'INPUT') return;
+  if (e.target && e.target.tagName === 'INPUT' && e.target.offsetParent) return;
   if (e.code === 'KeyP' || e.code === 'Escape') { if (menuOpen) resumeGame(); else pauseGame(); }
   if (e.code === 'KeyX' && !e.repeat && !menuOpen && canX()) {
     if (role === 'guest') { NET.xSeq++; guestPublish(true); }
